@@ -7,8 +7,8 @@ import {Accordion,Panel,Navbar,Nav,NavItem,Button,Grid,Row,Col,ControlLabel,Form
 
 
 // pull in the ag-grid styles we're interested in
-//import "ag-grid-root/dist/styles/ag-grid.css";
-//import "ag-grid-root/dist/styles/theme-fresh.css";
+import "ag-grid/dist/styles/ag-grid.css";
+import "ag-grid/dist/styles/theme-fresh.css";
 
 // our application
 import PlayerGrid from "./PlayerGrid";
@@ -119,7 +119,7 @@ class App extends React.Component {
       startingBudget: startingBudget,
       teamList: this.state.teamList,
     });
-    axios.post(`http://localhost:5000/players`, this.leagueSettings)
+    axios.post(`/api/players`, this.leagueSettings)
     .then(res => {
       let currentDraftStatus = calcCurrentDraftStatus(mergeSavedData(res.data), this.state.startingBudget, this.state.teamList);
       this.setState({

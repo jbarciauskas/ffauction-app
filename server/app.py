@@ -5,11 +5,9 @@ from ffauction.player import PlayerSet, PlayerPriceJsonEncoder
 from ffauction.pricing import VBDModel, PriceModel
 from ffauction.user_settings import UserSettings
 import json
-from flask_cors import CORS
 
 
 app = Flask(__name__)
-CORS(app)
 
 
 DEFAULTS = {
@@ -47,7 +45,7 @@ DEFAULTS = {
 }
 
 
-@app.route('/players', methods=['POST', 'GET'])
+@app.route('/api/players', methods=['POST', 'GET'])
 def get_players():
     settings_dict = DEFAULTS.copy()
     if request.json:
@@ -75,4 +73,4 @@ def get_players():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=3001)

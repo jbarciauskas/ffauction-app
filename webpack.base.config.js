@@ -24,7 +24,8 @@ module.exports = {
     ],
 
     loaders: [
-      { test: /\.svg$/, loaders: ['babel', 'react-svg'] }
+      { test: /\.svg$/, loaders: ['babel', 'react-svg'] },
+      { test: /\.css$/, loader:'style!css!' }
     ],
 
     noParse: /\.min\.js/
