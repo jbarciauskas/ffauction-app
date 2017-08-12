@@ -1,10 +1,12 @@
-#!python
 from flask import Flask, request
+import json
+from logging import StreamHandler
+from sys import stdout
+
 from ffauction.league import League
 from ffauction.player import PlayerSet, PlayerPriceJsonEncoder
 from ffauction.pricing import VBDModel, PriceModel
 from ffauction.user_settings import UserSettings
-import json
 
 
 app = Flask(__name__)
@@ -72,5 +74,8 @@ def get_players():
     return json.dumps(player_set.get_all(), cls=PlayerPriceJsonEncoder)
 
 
-if __name__ == '__main__':
-    app.run(debug=True, port=3001)
+def create_app():
+    app = Flask(__name__)
+    handler = StreamHandler(stdout)
+    app.logger.addHandler(handler)
+    return app
