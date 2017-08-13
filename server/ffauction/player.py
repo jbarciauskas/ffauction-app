@@ -1,5 +1,6 @@
 import json
 import csv
+import io
 
 
 class Player:
@@ -88,25 +89,27 @@ class PlayerSet:
         return top_n
 
     def load_projection_stats_from_csv(self, uploaded_file):
-        with open(uploaded_file) as stats_file:
-            reader = csv.reader(stats_file)
-            headers = next(reader)
-            for row in reader:
-                player = Player()
-                rowDict = {}
-                for i in range(0, len(row)):
-                    rowDict[headers[i]] = row[i]
+        projections = uploaded_file.stream.read()
+        projectionsCsv = projections.decode('utf-8')
+        projectionsStream = io.StringIO(projectionsCsv)
+        reader = csv.reader(projectionsStream)
+        headers = next(reader)
+        for row in reader:
+            player = Player()
+            rowDict = {}
+            for i in range(0, len(row)):
+                rowDict[headers[i]] = row[i]
 
-                player.init_from_row(rowDict)
+            player.init_from_row(rowDict)
 
-                if player.position == 'QB':
-                    self.QB.append(player)
-                if player.position == 'RB':
-                    self.RB.append(player)
-                if player.position == 'WR':
-                    self.WR.append(player)
-                if player.position == 'TE':
-                    self.TE.append(player)
+            if player.position == 'QB':
+                self.QB.append(player)
+            if player.position == 'RB':
+                self.RB.append(player)
+            if player.position == 'WR':
+                self.WR.append(player)
+            if player.position == 'TE':
+                self.TE.append(player)
 
     def __str__(self):
         table_of_players = ""
