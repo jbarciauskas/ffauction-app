@@ -64,7 +64,7 @@ class App extends React.Component {
     let startingBudget = ((this.leagueSettings.num_teams * this.leagueSettings.team_budget)
       - (this.leagueSettings.roster.k * this.leagueSettings.num_teams
           + this.leagueSettings.roster.team_def * this.leagueSettings.num_teams));
-    let currentDraftStatus = calcCurrentDraftStatus([], startingBudget, this.teamList);
+    let currentDraftStatus = calcCurrentDraftStatus([], startingBudget, this.teamList, this.leagueSettings);
     this.state = {
       currentDraftStatus: currentDraftStatus,
       startingBudget: startingBudget,
@@ -88,7 +88,7 @@ class App extends React.Component {
   }
 
   onPlayerDataChange() {
-    let currentDraftStatus = calcCurrentDraftStatus(this.state.rowData, this.state.startingBudget, this.state.teamList);
+    let currentDraftStatus = calcCurrentDraftStatus(this.state.rowData, this.state.startingBudget, this.state.teamList, this.state.leagueSettings);
     this.setState({
       rowData: this.state.rowData,
       currentDraftStatus: currentDraftStatus,
@@ -122,7 +122,7 @@ class App extends React.Component {
     });
     axios.post(`/api/players`, this.leagueSettings)
     .then(res => {
-      let currentDraftStatus = calcCurrentDraftStatus(mergeSavedData(res.data), this.state.startingBudget, this.state.teamList);
+      let currentDraftStatus = calcCurrentDraftStatus(mergeSavedData(res.data), this.state.startingBudget, this.state.teamList, this.state.leagueSettings);
       this.setState({
         startingBudget: this.state.startingBudget,
         rowData: res.data,
@@ -255,8 +255,27 @@ class App extends React.Component {
 
     return this.state.leagueSettings.team_budget
       - this.state.currentDraftStatus.mySpentBudget
-      - (totalRosterSize - this.state.currentDraftStatus.currentRoster.length);
+      - (totalRosterSize - this.state.currentDraftStatus.currentRosterLength);
   }
+
+  getPlayerCell(player) {
+    return <tr>
+      <td>{player.name}</td>
+      <td>{player.purchase_price}</td>
+    </tr>;
+  }
+
+  getPlayersOnYourTeam(position) {
+    let rosterByPosition = this.state.currentDraftStatus.rosterByPosition;
+    let rows = [];
+    rosterByPosition[position].forEach((player) => {
+      rows.push(this.getPlayerCell(player));
+    });
+
+    return rows;
+  }
+
+
 
   render() {
     const popover = (
@@ -364,6 +383,33 @@ class App extends React.Component {
                 </tbody>
                 </Table>
               </Col>
+            </Row>
+            </Panel>
+            <Panel header="Your team" eventKey="2">
+            <Row>
+            <Col md={3}>
+            <Table striped bordered condensed> <thead> <td>QB</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('QB')} </tbody> </Table>
+            </Col>
+            <Col md={3}>
+            <Table striped bordered condensed> <thead> <td>RB</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('RB')} </tbody> </Table>
+            </Col>
+            <Col md={3}>
+            <Table striped bordered condensed> <thead> <td>WR</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('WR')} </tbody> </Table>
+            </Col>
+            <Col md={3}>
+            <Table striped bordered condensed> <thead> <td>TE</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('TE')} </tbody> </Table>
+            </Col>
+            </Row>
+            <Row>
+            <Col md={3}>
+            <Table striped bordered condensed> <thead> <td>Bench</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('bench')} </tbody> </Table>
+            </Col>
+            <Col md={3}>
+            <Table striped bordered condensed> <thead> <td>K</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('K')} </tbody> </Table>
+            </Col>
+            <Col md={3}>
+            <Table striped bordered condensed> <thead> <td>DST</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('DST')} </tbody> </Table>
+            </Col>
             </Row>
             </Panel>
           </Accordion>
@@ -570,7 +616,7 @@ class App extends React.Component {
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
-function calcCurrentDraftStatus(players, startingBudget, teamList) {
+function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSettings) {
   let accumulatedValue = 0;
   let usedBudget = 0;
   let mySpentBudget = 0;
@@ -620,6 +666,33 @@ function calcCurrentDraftStatus(players, startingBudget, teamList) {
     }
   });
 
+  currentRoster.sort((a, b) => { return b.purchase_price - a.purchase_price });
+  let rosterByPosition = {
+    'QB':[],
+    'WR':[],
+    'RB':[],
+    'TE':[],
+    'K':[],
+    'DST':[],
+    'bench':[],
+  }
+
+  let bench = [];
+  currentRoster.forEach((player) => {
+    if((
+          player.position == 'WR' ||
+          player.position == 'RB' ||
+          player.position == 'TE'
+       ) &&
+      rosterByPosition[player.position].length == leagueSettings.roster[player.position]) {
+      bench.push(player);
+    }
+    else {
+      rosterByPosition[player.position].push(player);
+    }
+  });
+
+
   let inflationRate = (startingBudget + accumulatedValue) / startingBudget
   players.forEach((player) => {
     player.inflated_price = inflationRate * player.base_price;
@@ -629,7 +702,8 @@ function calcCurrentDraftStatus(players, startingBudget, teamList) {
     "inflationRate": inflationRate,
     "mySpentBudget": mySpentBudget,
     "nextBest": nextBest,
-    "currentRoster": currentRoster
+    "currentRosterLength": currentRoster.length,
+    "rosterByPosition": rosterByPosition
   };
 }
 
