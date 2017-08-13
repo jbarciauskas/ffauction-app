@@ -63,9 +63,11 @@ class PlayerSet:
         self.RB = []
         self.WR = []
         self.TE = []
+        self.K = []
+        self.DST = []
 
     def get_all(self):
-        return self.QB + self.RB + self.WR + self.TE
+        return self.QB + self.RB + self.WR + self.TE + self.K + self.DST
 
     # @TODO Add other flex types
     def get_flex(self, flex_type, qb, rb, wr, te, flex):
@@ -110,6 +112,10 @@ class PlayerSet:
                 self.WR.append(player)
             if player.position == 'TE':
                 self.TE.append(player)
+            if player.position == 'K':
+                self.K.append(player)
+            if player.position == 'DST':
+                self.DST.append(player)
 
     def __str__(self):
         table_of_players = ""
