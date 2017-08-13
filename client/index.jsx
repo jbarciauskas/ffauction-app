@@ -74,6 +74,7 @@ class App extends React.Component {
       teamList: this.teamList,
     };
 
+    this.getMaxBid = this.getMaxBid.bind(this);
     this.clearSavedData = this.clearSavedData.bind(this);
     this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
     this.onTeamNameChange = this.onTeamNameChange.bind(this);
@@ -243,6 +244,20 @@ class App extends React.Component {
     }
   }
 
+  getMaxBid() {
+    var totalRosterSize = this.state.leagueSettings.roster.qb
+      + this.state.leagueSettings.roster.rb
+      + this.state.leagueSettings.roster.wr
+      + this.state.leagueSettings.roster.te
+      + this.state.leagueSettings.roster.k
+      + this.state.leagueSettings.roster.team_def
+      + this.state.leagueSettings.roster.bench;
+
+    return this.state.leagueSettings.team_budget
+      - this.state.currentDraftStatus.mySpentBudget
+      - (totalRosterSize - this.state.currentDraftStatus.currentRoster.length);
+  }
+
   render() {
     const popover = (
       <Popover id="modal-popover" title="popover">
@@ -287,6 +302,9 @@ class App extends React.Component {
               </Col>
               <Col md={12}>
               My remaining budget: <b>${this.state.leagueSettings.team_budget - this.state.currentDraftStatus.mySpentBudget}</b>
+              </Col>
+              <Col md={12}>
+              Max bid: <b>${this.getMaxBid()}</b>
               </Col>
               </Row>
               </Col>
@@ -562,6 +580,7 @@ function calcCurrentDraftStatus(players, startingBudget, teamList) {
     "wr": [],
     "te": [],
   };
+  let currentRoster = [];
 
   let sortedPlayersByValue = players.concat().sort((a, b) => {
     var val1 = b.base_price;
@@ -574,6 +593,7 @@ function calcCurrentDraftStatus(players, startingBudget, teamList) {
     }
     return val1 - val2;
   });
+
   sortedPlayersByValue.forEach((player) => {
     if(player.hasOwnProperty('purchase_price') && !isNaN(player.purchase_price) && player.purchase_price !== null) {
       accumulatedValue += player.base_price - player.purchase_price;
@@ -581,6 +601,7 @@ function calcCurrentDraftStatus(players, startingBudget, teamList) {
       // @TODO some other way to set a team as "yours"?
       if(teamList && player.draft_team == teamList[0]) {
         mySpentBudget += player.purchase_price;
+        currentRoster.push(player);
       }
     }
     else {
@@ -598,11 +619,18 @@ function calcCurrentDraftStatus(players, startingBudget, teamList) {
       }
     }
   });
+
   let inflationRate = (startingBudget + accumulatedValue) / startingBudget
   players.forEach((player) => {
     player.inflated_price = inflationRate * player.base_price;
   });
-  return {"usedBudget": usedBudget, "inflationRate": inflationRate, "mySpentBudget": mySpentBudget, "nextBest": nextBest};
+  return {
+    "usedBudget": usedBudget,
+    "inflationRate": inflationRate,
+    "mySpentBudget": mySpentBudget,
+    "nextBest": nextBest,
+    "currentRoster": currentRoster
+  };
 }
 
 function mergeSavedData(players) {
