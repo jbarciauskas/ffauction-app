@@ -7,9 +7,45 @@ export default class extends Component {
     constructor(props) {
         super(props);
 
+        this.byeWeeks = {
+          'ATL': 5,
+          'DEN': 5,
+          'NO': 5,
+          'WAS': 5,
+          'BUF': 6,
+          'CIN': 6,
+          'DAL': 6,
+          'SEA': 6,
+          'DET': 7,
+          'HOU': 7,
+          'ARI': 8,
+          'GB': 8,
+          'JAX': 8,
+          'LAR': 8,
+          'NYG': 8,
+          'TEN': 8,
+          'CHI': 9,
+          'CLE': 9,
+          'LAC': 9,
+          'MIN': 9,
+          'NE': 9,
+          'PIT': 9,
+          'BAL': 10,
+          'KC': 10,
+          'OAK': 10,
+          'PHI': 10,
+          'CAR': 11,
+          'IND': 11,
+          'MIA': 11,
+          'NYJ': 11,
+          'SF': 11,
+          'TB': 11,
+        };
+
         this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
         this.onGridReady = this.onGridReady.bind(this);
         this.getRowStyle = this.getRowStyle.bind(this);
+        this.lookupByeWeek = this.lookupByeWeek.bind(this);
         this.state = {
             quickFilterText: null,
             columnDefs: this.createColumnDefs()
@@ -43,11 +79,16 @@ export default class extends Component {
       return (params.value ? params.value : "") + '<div class="pull-right"><span class="caret"/></div>';
     }
 
+    lookupByeWeek(params) {
+      return this.byeWeeks[params.value];
+    }
+
     createColumnDefs() {
         return [
             {headerName: "Player name", field: "name", filter: "text"},
-            {headerName: "Pos", field: "position", filter: "text"},
-            {headerName: "Team", field: "team", filter: "text"},
+            {headerName: "Pos", field: "position", filter: "text", width: 100},
+            {headerName: "Team", field: "team", filter: "text", width: 100},
+            {headerName: "ByeWk", field: "team", filter: "number", cellRenderer: this.lookupByeWeek, width: 100},
             {headerName: "Projected Points", field: "points", filter: "number", cellRenderer: formatNumber, sortingOrder: ['desc','asc']},
             {headerName: "Base Value ($)", field: "base_price", filter: "number", cellRenderer: formatNumber, sortingOrder: ['desc','asc']},
             {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", cellRenderer: formatNumber, sort: 'desc', sortingOrder: ['desc','asc']},

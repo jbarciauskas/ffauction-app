@@ -74,12 +74,12 @@ config = update(config, {
       historyApiFallback: true,
 
       headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3001',
+        'Access-Control-Allow-Origin': 'http://localhost:5000',
         'Access-Control-Allow-Headers': 'X-Requested-With'
       },
 
       proxy: {
-        '/api/*': 'http://localhost:3001'
+        '/api/*': 'http://localhost:5000'
       }
     }
   }
