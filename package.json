@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "A draft board based on VBD",
   "scripts": {
-    "gunicorn": "gunicorn -b $ADDRESS:$PORT --chdir server entry:app",
+    "gunicorn": "gunicorn -b $BIND_ADDRESS:$PORT --chdir server entry:app",
     "start": "webpack-dev-server",
     "test": "NODE_ENV=test BABEL_JEST_STAGE=0 jest",
     "dist": "NODE_ENV=production webpack -p",
