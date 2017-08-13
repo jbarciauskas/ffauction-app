@@ -22,6 +22,10 @@
     }
   ],
   "env": {
+    "BIND_ADDRESS": {
+      "description": "Bind address for gunicorn",
+      "value": "0.0.0.0"
+    },
     "NODE_ENV": {
       "description": "Set the `NODE_ENV` environment variable to `production` to disable debugging etc.",
       "value": "production"
