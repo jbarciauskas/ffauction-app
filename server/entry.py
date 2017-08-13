@@ -1,6 +1,9 @@
-from app import create_app
+from logging import StreamHandler
+from sys import stdout
 
-app = create_app()
+from app import app
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    handler = StreamHandler(stdout)
+    app.logger.addHandler(handler)
+    app.run()

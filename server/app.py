@@ -1,10 +1,8 @@
 from flask import Flask, request, render_template
 import json
-from logging import StreamHandler
 import os
 import pickle
 import redis
-from sys import stdout
 
 from ffauction.league import League
 from ffauction.player import PlayerSet, PlayerPriceJsonEncoder
@@ -50,7 +48,7 @@ DEFAULTS = {
 }
 
 
-# @app.route('/api/players', methods=['POST', 'GET'])
+@app.route('/api/players', methods=['POST', 'GET'])
 def get_players():
     settings_dict = DEFAULTS.copy()
     if request.json:
@@ -92,22 +90,6 @@ def upload_projections():
     return "Success"
 
 
+@app.route('/')
 def index():
     return render_template('index.html')
-
-
-def create_app():
-    app = Flask(__name__)
-    app.add_url_rule('/', 'index', index)
-    app.add_url_rule('/api/players',
-                     'get_players',
-                     get_players,
-                     methods=['GET', 'POST'])
-    app.add_url_rule('/api/uploadProjections',
-                     'uploadProjections',
-                     upload_projections,
-                     methods=['POST'])
-
-    handler = StreamHandler(stdout)
-    app.logger.addHandler(handler)
-    return app
