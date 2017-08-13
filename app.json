@@ -30,10 +30,6 @@
       "description": "By default heroku is not installing `devDependencies`, so let's do that.",
       "value": "false"
     },
-    "GUNICORN_PARAMS": {
-      "description": "",
-      "value": "-c gunicorn.cfg"
-    },
     "AUTH_USERNAME": {
       "description": "Username for authorization for protected endpoints (CSV upload)",
       "value": "admin"
