@@ -4,6 +4,7 @@ import os
 import pickle
 import redis
 
+from auth import requires_auth
 from ffauction.league import League
 from ffauction.player import PlayerSet, PlayerPriceJsonEncoder
 from ffauction.pricing import VBDModel, PriceModel
@@ -79,6 +80,7 @@ def get_players():
 
 
 @app.route('/api/uploadProjections', methods=['POST'])
+@requires_auth
 def upload_projections():
     if 'projections' not in request.files:
         return "Failed, missing file"
