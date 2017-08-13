@@ -12,7 +12,7 @@
     "reload"
   ],
   "website": "https://github.com/jbarciauskas/ffauction-app",
-  "addons": ["openredis"],
+  "addons": ["heroku-redis:hobby-dev"],
   "buildpacks": [
     {
       "url": "heroku/python"
