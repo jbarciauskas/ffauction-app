@@ -20,7 +20,7 @@ export default class extends Component {
           'HOU': 7,
           'ARI': 8,
           'GB': 8,
-          'JAX': 8,
+          'JAC': 8,
           'LAR': 8,
           'NYG': 8,
           'TEN': 8,
