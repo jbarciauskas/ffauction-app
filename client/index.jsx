@@ -205,7 +205,7 @@ class App extends React.Component {
     });
   }
 
-  getNextBest(currentDraftStatus, position, index, property) {
+  getBestAvailable(currentDraftStatus, position, index, property) {
     if(currentDraftStatus.hasOwnProperty('nextBest')
         && currentDraftStatus.nextBest.hasOwnProperty(position)
         && currentDraftStatus.nextBest[position].length > 0) {
@@ -215,7 +215,7 @@ class App extends React.Component {
     }
   }
 
-  getNextBestDrop(currentDraftStatus, position) {
+  getBestAvailableDrop(currentDraftStatus, position) {
     if(currentDraftStatus.hasOwnProperty('nextBest')
         && currentDraftStatus.nextBest.hasOwnProperty(position)
         && currentDraftStatus.nextBest[position].length > 0) {
@@ -295,9 +295,9 @@ class App extends React.Component {
               <thead>
                 <tr>
                   <th>Position</th>
-                  <th>Next best</th>
+                  <th>Best available</th>
                   <th>Value</th>
-                  <th>Second best</th>
+                  <th>Next best</th>
                   <th>Value</th>
                   <th>Dropoff (%)</th>
                 </tr>
@@ -305,42 +305,42 @@ class App extends React.Component {
               <tbody>
                 <tr>
                   <td>QB</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'qb', 0, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'qb', 0, 'inflated_price')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'qb', 1, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'qb', 1, 'inflated_price')}</td>
-                  <td className={this.getDropOffCellClass(this.getNextBestDrop(this.state.currentDraftStatus, 'qb'))}>
-                    {this.getNextBestDrop(this.state.currentDraftStatus, 'qb')}
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 0, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 0, 'inflated_price')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 1, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 1, 'inflated_price')}</td>
+                  <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'qb'))}>
+                    {this.getBestAvailableDrop(this.state.currentDraftStatus, 'qb')}
                   </td>
                 </tr>
                 <tr>
                   <td>RB</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'rb', 0, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'rb', 0, 'inflated_price')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'rb', 1, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'rb', 1, 'inflated_price')}</td>
-                  <td className={this.getDropOffCellClass(this.getNextBestDrop(this.state.currentDraftStatus, 'rb'))}>
-                    {this.getNextBestDrop(this.state.currentDraftStatus, 'rb')}
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 0, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 0, 'inflated_price')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 1, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 1, 'inflated_price')}</td>
+                  <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'rb'))}>
+                    {this.getBestAvailableDrop(this.state.currentDraftStatus, 'rb')}
                   </td>
                 </tr>
                 <tr>
                   <td>WR</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'wr', 0, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'wr', 0, 'inflated_price')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'wr', 1, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'wr', 1, 'inflated_price')}</td>
-                  <td className={this.getDropOffCellClass(this.getNextBestDrop(this.state.currentDraftStatus, 'wr'))}>
-                    {this.getNextBestDrop(this.state.currentDraftStatus, 'wr')}
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 0, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 0, 'inflated_price')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 1, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 1, 'inflated_price')}</td>
+                  <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'wr'))}>
+                    {this.getBestAvailableDrop(this.state.currentDraftStatus, 'wr')}
                   </td>
                 </tr>
                 <tr>
                   <td>TE</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'te', 0, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'te', 0, 'inflated_price')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'te', 1, 'name')}</td>
-                  <td>{this.getNextBest(this.state.currentDraftStatus, 'te', 1, 'inflated_price')}</td>
-                  <td className={this.getDropOffCellClass(this.getNextBestDrop(this.state.currentDraftStatus, 'te'))}>
-                    {this.getNextBestDrop(this.state.currentDraftStatus, 'te')}
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 0, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 0, 'inflated_price')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 1, 'name')}</td>
+                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 1, 'inflated_price')}</td>
+                  <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'te'))}>
+                    {this.getBestAvailableDrop(this.state.currentDraftStatus, 'te')}
                   </td>
                 </tr>
                 </tbody>
