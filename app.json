@@ -41,7 +41,7 @@
     },
     "AUTH_PASSWORD": {
       "description": "Password for authorization for protected endpoints (CSV upload)",
-      "value": ""
-    },
+      "generator": "secret"
+    }
   }
 }
