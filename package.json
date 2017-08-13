@@ -14,8 +14,7 @@
     "url": "https://github.com/jbarciauskas/ffauction-app.git"
   },
   "engines": {
-    "node": "6.11.2",
-    "npm": "2.10"
+    "node": "6.11.2"
   },
   "keywords": [
     "react",
