@@ -1,5 +1,5 @@
 {
-  "name": "ffauction-draft-board",
+  "name": "ffauction-draft-tool",
   "version": "0.1.0",
   "description": "A draft board based on VBD",
   "scripts": {
