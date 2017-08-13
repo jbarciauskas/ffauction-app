@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'test') {
       $set: [
         'webpack-dev-server/client?http://localhost:3000',
         'webpack/hot/dev-server',
-        './client/index.jsx'
+        './client/index'
       ]
     }
   });

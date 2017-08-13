@@ -13,7 +13,7 @@ var TEMPLATES_PATH = 'server/templates';
 config = update(config, {
   bail: { $set: true },
 
-  entry: { $set: ['./client/index.jsx'] },
+  entry: { $set: ['./client/index'] },
 
   debug: { $set: false },
 

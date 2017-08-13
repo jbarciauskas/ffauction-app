@@ -1,6 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import json
 from logging import StreamHandler
+import os
+import pickle
+import redis
 from sys import stdout
 
 from ffauction.league import League
@@ -47,7 +50,7 @@ DEFAULTS = {
 }
 
 
-@app.route('/api/players', methods=['POST', 'GET'])
+# @app.route('/api/players', methods=['POST', 'GET'])
 def get_players():
     settings_dict = DEFAULTS.copy()
     if request.json:
@@ -61,11 +64,14 @@ def get_players():
             if 'recYds' in request.json['scoring']:
                 request.json['scoring']['recYds'] =\
                     (1 / request.json['scoring']['recYds'])
-    settings_dict.update(request.json)
+        settings_dict.update(request.json)
     user_settings = UserSettings(settings_dict)
-    player_set = PlayerSet()
+    r = redis.from_url(os.environ.get("REDIS_URL"))
+    pickled_player_set = r.get('projections')
+    if not pickled_player_set:
+        return "No projections"
+    player_set = pickle.loads(pickled_player_set)
     league = League(user_settings, player_set)
-    player_set.load_projection_stats_from_csv('/Users/jbarciauskas/Documents/fantasyfootball/projections-20170806-avg-cbs-yahoo-nfl-fftoday-fantasydata.csv')
     league.calc_projected_points()
     vbd_model = VBDModel()
     vbd_model.calc_vbd(league)
@@ -74,8 +80,34 @@ def get_players():
     return json.dumps(player_set.get_all(), cls=PlayerPriceJsonEncoder)
 
 
+@app.route('/api/uploadProjections', methods=['POST'])
+def upload_projections():
+    if 'projections' not in request.files:
+        return "Failed, missing file"
+    projections = request.files['projections']
+    player_set = PlayerSet()
+    player_set.load_projection_stats_from_csv(projections)
+    r = redis.from_url(os.environ.get("REDIS_URL"))
+    r.set('projections', pickle.dumps(player_set))
+    return "Success"
+
+
+def index():
+    return render_template('index.html')
+
+
 def create_app():
     app = Flask(__name__)
+    app.add_url_rule('/', 'index', index)
+    app.add_url_rule('/api/players',
+                     'get_players',
+                     get_players,
+                     methods=['GET', 'POST'])
+    app.add_url_rule('/api/uploadProjections',
+                     'uploadProjections',
+                     upload_projections,
+                     methods=['POST'])
+
     handler = StreamHandler(stdout)
     app.logger.addHandler(handler)
     return app
