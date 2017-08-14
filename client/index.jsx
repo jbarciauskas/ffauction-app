@@ -237,7 +237,7 @@ class App extends React.Component {
     var doubleCheck = confirm("Are you sure you want to clear price data and restart the auction?");
     if(doubleCheck) {
       this.state.rowData.forEach((player) => {
-        player.purchase_price = null;
+        player.purchase_price = 0;
         player.draft_team = null;
         localStorage.removeItem("player-" + player.player_id);
       });
@@ -655,16 +655,15 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
   });
 
   sortedPlayersByValue.forEach((player) => {
-    if(player.hasOwnProperty('purchase_price') && !isNaN(player.purchase_price) && player.purchase_price !== null) {
-      accumulatedValue += player.base_price - player.purchase_price;
-      usedBudget += player.purchase_price;
-      // @TODO some other way to set a team as "yours"?
-      if(teamList && player.draft_team == teamList[0]) {
-        mySpentBudget += player.purchase_price;
-        currentRoster.push(player);
-      }
+    if(player.purchase_price > 0) accumulatedValue += player.base_price - player.purchase_price;
+
+    usedBudget += player.purchase_price;
+    // @TODO some other way to set a team as "yours"?
+    if(teamList && player.draft_team == teamList[0]) {
+      mySpentBudget += player.purchase_price;
+      currentRoster.push(player);
     }
-    else {
+    if(player.purchase_price == 0) {
       if(player.position == 'QB' && nextBest.qb.length < 2) {
         nextBest.qb.push(player);
       }
@@ -732,6 +731,7 @@ function mergeSavedData(players) {
       player.purchase_price = savedPlayerData.purchase_price;
       player.draft_team = savedPlayerData.draft_team;
     }
+    else player.purchase_price = 0;
   });
   return players;
 }

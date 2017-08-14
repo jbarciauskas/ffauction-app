@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {AgGridReact} from "ag-grid-react";
-import {Button, Grid, Row, Col, FormControl} from "react-bootstrap";
+import {Button, Grid, Row, Col, FormControl, Checkbox} from "react-bootstrap";
 
 
 export default class extends Component {
@@ -42,6 +42,7 @@ export default class extends Component {
           'TB': 11,
         };
 
+        this.onHideUnavailablePlayers = this.onHideUnavailablePlayers.bind(this);
         this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
         this.onGridReady = this.onGridReady.bind(this);
         this.getRowStyle = this.getRowStyle.bind(this);
@@ -64,15 +65,20 @@ export default class extends Component {
 
     onPlayerDataChange(event) {
       let player = event.data;
-      event.data.purchase_price = parseFloat(event.data.purchase_price);
-      localStorage.setItem("player-" + event.data.player_id, JSON.stringify({
-        "purchase_price": event.data.purchase_price,
-        "draft_team": event.data.draft_team,
-      }));
+      player.purchase_price = parseFloat(player.purchase_price);
+      if(player.purchase_price == null || player.purchase_price == 0) {
+        player.purchase_price = 0
+        localStorage.removeItem("player-" + player.player_id);
+      }
+      else {
+        localStorage.setItem("player-" + event.data.player_id, JSON.stringify({
+          "purchase_price": player.purchase_price,
+          "draft_team": player.draft_team,
+        }));
+      }
       console.log(player);
       // bubble up
       this.props.onPlayerDataChange(event);
-      setTimeout(() => {this.gridApi.setRowData(this.props.rowData)}, 0);
     }
 
     selectDropDownCellRenderer(params) {
@@ -92,19 +98,30 @@ export default class extends Component {
             {headerName: "Projected Points", field: "points", filter: "number", cellRenderer: formatPoints, sortingOrder: ['desc','asc']},
             {headerName: "Base Value ($)", field: "base_price", filter: "number", cellRenderer: formatPriceFloat, sortingOrder: ['desc','asc']},
             {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", cellRenderer: formatPriceFloat, sort: 'desc', sortingOrder: ['desc','asc']},
-            {headerName: "Paid ($)", field: "purchase_price", filter: "number", cellRenderer: formatPriceInt, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
+            {headerName: "Paid ($)", field: "purchase_price", filter: "number", cellRenderer: formatPurchasePrice, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
             {headerName: "Drafted by", field: "draft_team", filter: "text", cellEditor: 'select', cellEditorParams: {'values':this.props.teamList}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
         ];
     }
 
     getRowStyle(params) {
       var player = params.data;
-      if(player.hasOwnProperty('purchase_price') && !isNaN(player.purchase_price) && player.purchase_price !== null) {
+      if(player.purchase_price > 0) {
         return {
           color: 'gray',
           "font-style": 'italic',
         };
       }
+    }
+
+    onHideUnavailablePlayers(event) {
+      var purchasePriceFilter = this.gridApi.getFilterInstance('purchase_price');
+      console.log(purchasePriceFilter);
+      purchasePriceFilter.setModel({
+        type: 'equals',
+        filter: 0,
+        filterTo: null
+      });
+      purchasePriceFilter.onFilterChanged();
     }
 
     render() {
@@ -119,6 +136,9 @@ export default class extends Component {
                   <FormControl style={{"margin-bottom":"5px"}} type="text"
                     onChange={this.onQuickFilterText.bind(this)}
                     placeholder="Type player name, position, or team to filter..."/>
+                </Col>
+                <Col md={4}>
+                  <Button inline onClick={this.onHideUnavailablePlayers}>Hide unavailable players</Button>
                 </Col>
               </Row>
               <Row>
@@ -167,12 +187,12 @@ function formatPriceFloat(params) {
       return '<span class="pull-right" style="padding-right: 2px">$' + num + '</span>';
     }
 }
-function formatPriceInt(params) {
+function formatPurchasePrice(params) {
     let num = parseInt(params.value);
-    if(isNaN(num) || num === null) {
-      return '<i style="color: gray">Enter price...</i>';
+    if(isNaN(num) || num === null || num == 0) {
+      return '<i style="color: gray; padding-left: 5px">Enter price...</i>';
     }
     else {
-      return '<span class="pull-right" style="padding-right: 2px">$' + num + '</span>';
+      return '<span class="pull-right" style="padding-right: 5px">$' + num + '</span>';
     }
 }
