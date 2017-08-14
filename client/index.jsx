@@ -329,7 +329,7 @@ class App extends React.Component {
               </Navbar.Brand>
             </Navbar.Header>
             <Nav>
-              <NavItem eventKey={1} href="#" onClick={this.open}>Configure</NavItem>
+              <NavItem eventKey={1} href="#" onClick={this.open}>Configure league</NavItem>
               <NavItem eventKey={1} href="#" onClick={this.clearSavedData}>Restart auction</NavItem>
             </Nav>
           </Navbar>
