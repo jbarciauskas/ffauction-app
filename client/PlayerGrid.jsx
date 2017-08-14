@@ -42,6 +42,7 @@ export default class extends Component {
           'TB': 11,
         };
 
+        this.clearFilters = this.clearFilters.bind(this);
         this.onHideUnavailablePlayers = this.onHideUnavailablePlayers.bind(this);
         this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
         this.onGridReady = this.onGridReady.bind(this);
@@ -124,6 +125,11 @@ export default class extends Component {
       purchasePriceFilter.onFilterChanged();
     }
 
+    clearFilters(event) {
+      this.gridApi.setFilterModel(null);
+      this.gridApi.onFilterChanged();
+    }
+
     render() {
         let containerStyle = {
             height: "500px",
@@ -139,6 +145,8 @@ export default class extends Component {
                 </Col>
                 <Col md={4}>
                   <Button inline onClick={this.onHideUnavailablePlayers}>Hide unavailable players</Button>
+                  {' '}
+                  <Button inline onClick={this.clearFilters}>Clear filters</Button>
                 </Col>
               </Row>
               <Row>
