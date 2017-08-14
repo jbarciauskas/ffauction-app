@@ -280,10 +280,14 @@ class App extends React.Component {
   }
 
   getYourTeamTable(position) {
+    var positionName = "";
+    if(position == 'bench') positionName = 'Bench';
+    else if(position == 'flex') positionName = 'Flex';
+    else positionName = position;
     return <Col md={3}>
       <Table striped bordered condensed>
       <thead>
-       <td>{position}</td>
+       <td>{positionName}</td>
        <td>Points</td> 
        <td>Price</td> 
       </thead>
