@@ -149,7 +149,7 @@ class App extends React.Component {
   onSettingsChange(e) {
     if(e.target.id == 'num_teams') this.leagueSettings.num_teams = parseInt(e.target.value);
     if(e.target.id == 'team_budget') this.leagueSettings.team_budget = parseInt(e.target.value);
-    if(e.target.id == 'starter_budget_pct') this.leagueSettings.starter_budget_pct = parseFloat(e.target.value);
+    if(e.target.id == 'starter_budget_pct') this.leagueSettings.starter_budget_pct = parseFloat(e.target.value/100);
     if(e.target.id == 'roster[qb]') this.leagueSettings.roster.qb = parseInt(e.target.value);
     if(e.target.id == 'roster[rb]') this.leagueSettings.roster.rb = parseInt(e.target.value);
     if(e.target.id == 'roster[wr]') this.leagueSettings.roster.wr = parseInt(e.target.value);
@@ -454,10 +454,10 @@ class App extends React.Component {
                         <FormControl type="number" placeholder="200" value={this.state.leagueSettings.team_budget} onChange={this.onSettingsChange}/>
                       </FormGroup>
                     </Col>
-                    <Col xs={2}>
+                    <Col xs={3}>
                       <FormGroup controlId="starter_budget_pct">
                         <ControlLabel >Starter Budget %</ControlLabel>
-                        <FormControl type="number" placeholder=".88" step="0.01" value={this.state.leagueSettings.starter_budget_pct} onChange={this.onSettingsChange} />
+                        <FormControl type="number" value={this.state.leagueSettings.starter_budget_pct * 100} onChange={this.onSettingsChange} />
                       </FormGroup>
                     </Col>
                   </Row>
