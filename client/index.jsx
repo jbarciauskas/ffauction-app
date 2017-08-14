@@ -160,6 +160,7 @@ class App extends React.Component {
     if(e.target.id == 'roster[bench]') this.leagueSettings.roster.bench = parseInt(e.target.value);
     if(e.target.id == 'scoring[passYds]') this.leagueSettings.scoring.passYds = parseInt(e.target.value);
     if(e.target.id == 'scoring[passComp]') this.leagueSettings.scoring.passComp = parseFloat(e.target.value);
+    if(e.target.id == 'scoring[passTds]') this.leagueSettings.scoring.passTds = parseInt(e.target.value);
     if(e.target.id == 'scoring[sacks]') this.leagueSettings.scoring.sacks = parseFloat(e.target.value);
     if(e.target.id == 'scoring[passInt]') this.leagueSettings.scoring.passInt = parseFloat(e.target.value);
     if(e.target.id == 'scoring[rushYds]') this.leagueSettings.scoring.rushYds = parseInt(e.target.value);
