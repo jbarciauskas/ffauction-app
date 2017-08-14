@@ -74,8 +74,8 @@ class App extends React.Component {
       teamList: this.teamList,
     };
 
-    this.getPlayersOnYourTeam = this.getPlayersOnYourTeam.bind(this);
-    this.getYourTeamTable = this.getYourTeamTable.bind(this);
+    this.getPlayersOnMyTeam = this.getPlayersOnMyTeam.bind(this);
+    this.getMyTeamTable = this.getMyTeamTable.bind(this);
     this.getMaxBid = this.getMaxBid.bind(this);
     this.clearSavedData = this.clearSavedData.bind(this);
     this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
@@ -268,7 +268,7 @@ class App extends React.Component {
     </tr>;
   }
 
-  getPlayersOnYourTeam(position) {
+  getPlayersOnMyTeam(position) {
     let rosterByPosition = this.state.currentDraftStatus.rosterByPosition;
     let rows = [];
     rosterByPosition[position].forEach((player) => {
@@ -279,7 +279,7 @@ class App extends React.Component {
     return rows;
   }
 
-  getYourTeamTable(position) {
+  getMyTeamTable(position) {
     var positionName = "";
     if(position == 'bench') positionName = 'Bench';
     else if(position == 'flex') positionName = 'Flex';
@@ -296,7 +296,7 @@ class App extends React.Component {
        <td>Price</td> 
       </thead>
       <tbody>
-      {this.getPlayersOnYourTeam(position)}
+      {this.getPlayersOnMyTeam(position)}
       </tbody>
     </Table>
     </Col>;
@@ -412,18 +412,18 @@ class App extends React.Component {
               </Col>
             </Row>
             </Panel>
-            <Panel header="Your team" eventKey="2">
+            <Panel header="My team" eventKey="2">
             <Row>
-            {this.getYourTeamTable('QB')}
-            {this.getYourTeamTable('RB')}
-            {this.getYourTeamTable('WR')}
-            {this.getYourTeamTable('TE')}
+            {this.getMyTeamTable('QB')}
+            {this.getMyTeamTable('RB')}
+            {this.getMyTeamTable('WR')}
+            {this.getMyTeamTable('TE')}
             </Row>
             <Row>
-            {this.getYourTeamTable('flex')}
-            {this.getYourTeamTable('bench')}
-            {this.getYourTeamTable('K')}
-            {this.getYourTeamTable('DST')}
+            {this.getMyTeamTable('flex')}
+            {this.getMyTeamTable('bench')}
+            {this.getMyTeamTable('K')}
+            {this.getMyTeamTable('DST')}
             </Row>
             </Panel>
           </Accordion>
