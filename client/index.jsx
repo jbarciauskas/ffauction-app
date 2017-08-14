@@ -74,6 +74,8 @@ class App extends React.Component {
       teamList: this.teamList,
     };
 
+    this.getPlayersOnYourTeam = this.getPlayersOnYourTeam.bind(this);
+    this.getYourTeamTable = this.getYourTeamTable.bind(this);
     this.getMaxBid = this.getMaxBid.bind(this);
     this.clearSavedData = this.clearSavedData.bind(this);
     this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
@@ -258,10 +260,11 @@ class App extends React.Component {
       - (totalRosterSize - this.state.currentDraftStatus.currentRosterLength);
   }
 
-  getPlayerCell(player) {
+  getPlayerCell(player, points) {
     return <tr>
       <td>{player.name}</td>
-      <td>{player.purchase_price}</td>
+      <td><span className="pull-right">{points}</span></td>
+      <td><span className="pull-right">${player.purchase_price}</span></td>
     </tr>;
   }
 
@@ -269,10 +272,26 @@ class App extends React.Component {
     let rosterByPosition = this.state.currentDraftStatus.rosterByPosition;
     let rows = [];
     rosterByPosition[position].forEach((player) => {
-      rows.push(this.getPlayerCell(player));
+      let points = parseFloat(Math.round(player.points * 100) / 100).toFixed(2);
+      rows.push(this.getPlayerCell(player, points));
     });
 
     return rows;
+  }
+
+  getYourTeamTable(position) {
+    return <Col md={3}>
+      <Table striped bordered condensed>
+      <thead>
+       <td>{position}</td>
+       <td>Points</td> 
+       <td>Price</td> 
+      </thead>
+      <tbody>
+      {this.getPlayersOnYourTeam(position)}
+      </tbody>
+    </Table>
+    </Col>;
   }
 
 
@@ -387,29 +406,16 @@ class App extends React.Component {
             </Panel>
             <Panel header="Your team" eventKey="2">
             <Row>
-            <Col md={3}>
-            <Table striped bordered condensed> <thead> <td>QB</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('QB')} </tbody> </Table>
-            </Col>
-            <Col md={3}>
-            <Table striped bordered condensed> <thead> <td>RB</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('RB')} </tbody> </Table>
-            </Col>
-            <Col md={3}>
-            <Table striped bordered condensed> <thead> <td>WR</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('WR')} </tbody> </Table>
-            </Col>
-            <Col md={3}>
-            <Table striped bordered condensed> <thead> <td>TE</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('TE')} </tbody> </Table>
-            </Col>
+            {this.getYourTeamTable('QB')}
+            {this.getYourTeamTable('RB')}
+            {this.getYourTeamTable('WR')}
+            {this.getYourTeamTable('TE')}
             </Row>
             <Row>
-            <Col md={3}>
-            <Table striped bordered condensed> <thead> <td>Bench</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('bench')} </tbody> </Table>
-            </Col>
-            <Col md={3}>
-            <Table striped bordered condensed> <thead> <td>K</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('K')} </tbody> </Table>
-            </Col>
-            <Col md={3}>
-            <Table striped bordered condensed> <thead> <td>DST</td> <td>Price</td> </thead> <tbody> {this.getPlayersOnYourTeam('DST')} </tbody> </Table>
-            </Col>
+            {this.getYourTeamTable('flex')}
+            {this.getYourTeamTable('bench')}
+            {this.getYourTeamTable('K')}
+            {this.getYourTeamTable('DST')}
             </Row>
             </Panel>
           </Accordion>
@@ -666,7 +672,7 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
     }
   });
 
-  currentRoster.sort((a, b) => { return b.purchase_price - a.purchase_price });
+  currentRoster.sort((a, b) => { return b.points - a.points });
   let rosterByPosition = {
     'QB':[],
     'WR':[],
@@ -674,18 +680,21 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
     'TE':[],
     'K':[],
     'DST':[],
+    'flex':[],
     'bench':[],
   }
 
-  let bench = [];
   currentRoster.forEach((player) => {
     if((
           player.position == 'WR' ||
           player.position == 'RB' ||
           player.position == 'TE'
        ) &&
-      rosterByPosition[player.position].length == leagueSettings.roster[player.position]) {
-      bench.push(player);
+      rosterByPosition[player.position].length == leagueSettings.roster[player.position.toLowerCase()]) {
+      if(rosterByPosition['flex'].length == leagueSettings.roster['flex']) {
+        rosterByPosition['bench'].push(player);
+      }
+      else rosterByPosition['flex'].push(player);
     }
     else {
       rosterByPosition[player.position].push(player);
