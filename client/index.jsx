@@ -284,9 +284,13 @@ class App extends React.Component {
     if(position == 'bench') positionName = 'Bench';
     else if(position == 'flex') positionName = 'Flex';
     else positionName = position;
+    const headerStyle = {
+      backgroundColor: 'gray',
+      color: 'white'
+    };
     return <Col md={3}>
       <Table striped bordered condensed>
-      <thead>
+      <thead style={headerStyle}>
        <td>{positionName}</td>
        <td>Points</td> 
        <td>Price</td> 
