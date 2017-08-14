@@ -89,10 +89,10 @@ export default class extends Component {
             {headerName: "Pos", field: "position", filter: "text", width: 100},
             {headerName: "Team", field: "team", filter: "text", width: 100},
             {headerName: "ByeWk", field: "team", filter: "number", cellRenderer: this.lookupByeWeek, width: 100},
-            {headerName: "Projected Points", field: "points", filter: "number", cellRenderer: formatNumber, sortingOrder: ['desc','asc']},
-            {headerName: "Base Value ($)", field: "base_price", filter: "number", cellRenderer: formatNumber, sortingOrder: ['desc','asc']},
-            {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", cellRenderer: formatNumber, sort: 'desc', sortingOrder: ['desc','asc']},
-            {headerName: "Purchase ($)", field: "purchase_price", filter: "number", cellRenderer: formatInt, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
+            {headerName: "Projected Points", field: "points", filter: "number", cellRenderer: formatPoints, sortingOrder: ['desc','asc']},
+            {headerName: "Base Value ($)", field: "base_price", filter: "number", cellRenderer: formatPriceFloat, sortingOrder: ['desc','asc']},
+            {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", cellRenderer: formatPriceFloat, sort: 'desc', sortingOrder: ['desc','asc']},
+            {headerName: "Paid ($)", field: "purchase_price", filter: "number", cellRenderer: formatPriceInt, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
             {headerName: "Drafted by", field: "draft_team", filter: "text", cellEditor: 'select', cellEditorParams: {'values':this.props.teamList}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
         ];
     }
@@ -149,17 +149,30 @@ export default class extends Component {
     }
 }
 
-function formatNumber(params) {
+function formatPoints(params) {
+    let num = parseFloat(Math.round(params.value * 100) / 100).toFixed(2);
+    if(isNaN(num) || num === null) {
+      return 0;
+    }
+    else {
+      return '<span class="pull-right" style="padding-right: 2px">' + num + '</span>';
+    }
+}
+function formatPriceFloat(params) {
     let num = parseFloat(Math.round(params.value * 100) / 100).toFixed(2);
     if(isNaN(num) || num === null) {
       return "-";
     }
-    else return num;
+    else {
+      return '<span class="pull-right" style="padding-right: 2px">$' + num + '</span>';
+    }
 }
-function formatInt(params) {
+function formatPriceInt(params) {
     let num = parseInt(params.value);
     if(isNaN(num) || num === null) {
       return '<i style="color: gray">Enter price...</i>';
     }
-    else return num;
+    else {
+      return '<span class="pull-right" style="padding-right: 2px">$' + num + '</span>';
+    }
 }
