@@ -325,7 +325,7 @@ class App extends React.Component {
           <Navbar inverse>
             <Navbar.Header>
               <Navbar.Brand>
-                <a href="#">FFAuction</a>
+                <a href="#">FFAuctionDraft</a>
               </Navbar.Brand>
             </Navbar.Header>
             <Nav>
@@ -336,6 +336,11 @@ class App extends React.Component {
           <Row>
             <Col md={12}>
               <h1>Draft board</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+            <p><i>Value-based draft logic provided by <a href="https://reddit.com/u/elboberto">elboberto</a>! More details available at the <a href="https://www.reddit.com/r/fantasyfootball/comments/6shrc7/elbobertos_custom_auction_value_generator_2017/">v1.0 2017 reddit thread</a></i></p>
             </Col>
           </Row>
           <Accordion defaultActiveKey="1">
@@ -621,6 +626,11 @@ class App extends React.Component {
           teamList={this.state.teamList}
           onPlayerDataChange={this.onPlayerDataChange}>
         </PlayerGrid>
+        </Col>
+        </Row>
+        <Row>
+        <Col md={12}>
+        <p style={{"margin-top":"10px"}}>Created by <a href="https://github.com/jbarciauskas">Joel Barciauskas</a>, full source available on <a href="https://github.com/jbarciauskas/ffauction-app">GitHub</a> and <a href="https://spdx.org/licenses/GPL-3.0.html">licensed under GPL-3.0</a></p>
         </Col>
         </Row>
         </Grid>
