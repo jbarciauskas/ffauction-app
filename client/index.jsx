@@ -286,15 +286,17 @@ class App extends React.Component {
     };
     return <Col md={3}>
       <Table striped bordered condensed>
-      <thead style={headerStyle}>
-       <td>{positionName}</td>
-       <td>Points</td> 
-       <td>Price</td> 
-      </thead>
-      <tbody>
-      {this.getPlayersOnMyTeam(position)}
-      </tbody>
-    </Table>
+        <thead style={headerStyle}>
+          <tr>
+            <th>{positionName}</th>
+            <th>Points</th> 
+            <th>Price</th> 
+          </tr>
+        </thead>
+        <tbody>
+        {this.getPlayersOnMyTeam(position)}
+        </tbody>
+      </Table>
     </Col>;
   }
 
