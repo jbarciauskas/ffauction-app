@@ -80,6 +80,7 @@ export default class extends Component {
       console.log(player);
       // bubble up
       this.props.onPlayerDataChange(event);
+      setTimeout(() => {this.gridApi.setRowData(this.props.rowData)}, 0);
     }
 
     selectDropDownCellRenderer(params) {
