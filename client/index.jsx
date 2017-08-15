@@ -179,7 +179,7 @@ class App extends React.Component {
     var teamControlId = "team." + i;
     var yourTeamNote = ""
     if(i == 0) yourTeamNote = <i>(your team)</i>;
-    return <Row style={{"padding-bottom": "5px"}}>
+    return <Row style={{"padding-bottom": "5px"}} key={teamControlId}>
       <FormGroup controlId={teamControlId}>
         <Col md={3}>
           <ControlLabel >Team #{i+1}</ControlLabel> {' '}{yourTeamNote}
@@ -261,7 +261,7 @@ class App extends React.Component {
   }
 
   getPlayerCell(player, points) {
-    return <tr>
+    return <tr key={"my-team-row-" + player.player_id}>
       <td>{player.name}</td>
       <td><span className="pull-right">{points}</span></td>
       <td><span className="pull-right">${player.purchase_price}</span></td>
