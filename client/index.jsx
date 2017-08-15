@@ -77,7 +77,8 @@ class App extends React.Component {
     this.getPlayersOnMyTeam = this.getPlayersOnMyTeam.bind(this);
     this.getMyTeamTable = this.getMyTeamTable.bind(this);
     this.getMaxBid = this.getMaxBid.bind(this);
-    this.clearSavedData = this.clearSavedData.bind(this);
+    this.restartAuction = this.restartAuction.bind(this);
+    this.resetKeepers = this.resetKeepers.bind(this);
     this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
     this.onTeamNameChange = this.onTeamNameChange.bind(this);
     this.getTeamRow = this.getTeamRow.bind(this);
@@ -229,13 +230,33 @@ class App extends React.Component {
     else if(parseFloat(val) > 20) return 'warning';
   }
 
-  clearSavedData(event) {
+  resetKeepers(event) {
+    var doubleCheck = confirm("Are you sure you want to clear price data and reset keepers?");
+    if(doubleCheck) {
+      this.state.rowData.forEach((player) => {
+        if(player.hasOwnProperty('keeper') && player.keeper == 'Yes') {
+          player.purchase_price = 0;
+          player.draft_team = null;
+          player.keeper = 'No';
+          localStorage.removeItem("player-" + player.player_id);
+        }
+      });
+      this.onPlayerDataChange();
+      this.saveSettings();
+    }
+  }
+
+  restartAuction(event) {
     var doubleCheck = confirm("Are you sure you want to clear price data and restart the auction?");
     if(doubleCheck) {
       this.state.rowData.forEach((player) => {
-        player.purchase_price = 0;
-        player.draft_team = null;
-        localStorage.removeItem("player-" + player.player_id);
+        if(player.hasOwnProperty('keeper') && player.keeper == 'Yes') {
+        }
+        else {
+          player.purchase_price = 0;
+          player.draft_team = null;
+          localStorage.removeItem("player-" + player.player_id);
+        }
       });
       this.onPlayerDataChange();
       this.saveSettings();
@@ -328,7 +349,8 @@ class App extends React.Component {
             </Navbar.Header>
             <Nav>
               <NavItem eventKey={1} href="#" onClick={this.open}>Configure league</NavItem>
-              <NavItem eventKey={1} href="#" onClick={this.clearSavedData}>Restart auction</NavItem>
+              <NavItem eventKey={2} href="#" onClick={this.restartAuction}>Restart auction</NavItem>
+              <NavItem eventKey={3} href="#" onClick={this.resetKeepers}>Reset keepers</NavItem>
             </Nav>
           </Navbar>
           <Row>
@@ -738,8 +760,12 @@ function mergeSavedData(players) {
       savedPlayerData = JSON.parse(savedPlayerData);
       player.purchase_price = savedPlayerData.purchase_price;
       player.draft_team = savedPlayerData.draft_team;
+      player.keeper = savedPlayerData.keeper;
     }
-    else player.purchase_price = 0;
+    else {
+      player.purchase_price = 0;
+      player.keeper = 'No';
+    }
   });
   return players;
 }
