@@ -97,10 +97,6 @@ class App extends React.Component {
     });
   }
 
-  getInitialState() {
-    return { showModal: false };
-  }
-
   saveSettings() {
     this.state.startingBudget = ((this.leagueSettings.num_teams * this.leagueSettings.team_budget)
       - (this.leagueSettings.roster.k * this.leagueSettings.num_teams
