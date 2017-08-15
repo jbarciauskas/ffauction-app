@@ -162,6 +162,7 @@ export default class extends Component {
                     enableSorting
                     enableFilter
                     singleClickEdit
+                    suppressDragLeaveHidesColumns
                     stopEditingWhenGridLosesFocus
                     getRowStyle={this.getRowStyle}
 
