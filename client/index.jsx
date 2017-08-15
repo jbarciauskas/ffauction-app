@@ -554,7 +554,7 @@ class App extends React.Component {
                   <Col xs={2}>
                     <FormGroup controlId="scoring[passComp]">
                       <ControlLabel >Completions</ControlLabel>
-                      <FormControl type="number" placeholder="0" value={this.state.leagueSettings.scoring.passComp} onChange={this.onSettingsChange}/>
+                      <FormControl type="number" placeholder="0" step="0.05" value={this.state.leagueSettings.scoring.passComp} onChange={this.onSettingsChange}/>
                     </FormGroup>
                   </Col>
                    <Col xs={2}>
