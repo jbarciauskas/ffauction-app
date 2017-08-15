@@ -68,13 +68,15 @@ export default class extends Component {
       let player = event.data;
       player.purchase_price = parseFloat(player.purchase_price);
       if(player.purchase_price == null || player.purchase_price == 0) {
-        player.purchase_price = 0
+        player.purchase_price = 0;
+        player.draft_team = null;
         localStorage.removeItem("player-" + player.player_id);
       }
       else {
         localStorage.setItem("player-" + event.data.player_id, JSON.stringify({
           "purchase_price": player.purchase_price,
           "draft_team": player.draft_team,
+          "keeper": player.keeper,
         }));
       }
       console.log(player);
@@ -102,6 +104,7 @@ export default class extends Component {
             {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", cellRenderer: formatPriceFloat, sort: 'desc', sortingOrder: ['desc','asc']},
             {headerName: "Paid ($)", field: "purchase_price", filter: "number", cellRenderer: formatPurchasePrice, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
             {headerName: "Drafted by", field: "draft_team", filter: "text", cellEditor: 'select', cellEditorParams: {'values':this.props.teamList}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
+            {headerName: "Keeper", field: "keeper", filter: "text", cellEditor: 'select', cellEditorParams: {'values':['Yes', 'No']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
         ];
     }
 
