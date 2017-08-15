@@ -102,7 +102,7 @@ class App extends React.Component {
   }
 
   saveSettings() {
-    let startingBudget = ((this.leagueSettings.num_teams * this.leagueSettings.team_budget)
+    this.state.startingBudget = ((this.leagueSettings.num_teams * this.leagueSettings.team_budget)
       - (this.leagueSettings.roster.k * this.leagueSettings.num_teams
           + this.leagueSettings.roster.team_def * this.leagueSettings.num_teams));
 
@@ -117,18 +117,17 @@ class App extends React.Component {
         this.state.teamList.pop();
       }
     }
-    this.setState({
-      showModal: false,
-      startingBudget: startingBudget,
-      teamList: this.state.teamList,
-    });
+
+    this.state.showModal = false;
+
     axios.post(`/api/players`, this.leagueSettings)
     .then(res => {
       let currentDraftStatus = calcCurrentDraftStatus(mergeSavedData(res.data), this.state.startingBudget, this.state.teamList, this.state.leagueSettings);
       this.setState({
         startingBudget: this.state.startingBudget,
         rowData: res.data,
-        currentDraftStatus: currentDraftStatus
+        currentDraftStatus: currentDraftStatus,
+        showModal: this.state.showModal
       });
     });
     localStorage.setItem('leagueSettings', JSON.stringify(this.leagueSettings));
