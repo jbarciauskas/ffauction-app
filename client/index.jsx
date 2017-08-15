@@ -78,6 +78,7 @@ class App extends React.Component {
     this.getMyTeamTable = this.getMyTeamTable.bind(this);
     this.getMaxBid = this.getMaxBid.bind(this);
     this.clearSavedData = this.clearSavedData.bind(this);
+    this.resetKeepers = this.resetKeepers.bind(this);
     this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
     this.onTeamNameChange = this.onTeamNameChange.bind(this);
     this.getTeamRow = this.getTeamRow.bind(this);
@@ -229,6 +230,22 @@ class App extends React.Component {
     else if(parseFloat(val) > 20) return 'warning';
   }
 
+  resetKeepers(event) {
+    var doubleCheck = confirm("Are you sure you want to clear price data and reset keepers?");
+    if(doubleCheck) {
+      this.state.rowData.forEach((player) => {
+        if(player.hasOwnProperty('keeper') && player.keeper == 'Yes') {
+          player.purchase_price = 0;
+          player.draft_team = null;
+          player.keeper = 'No';
+          localStorage.removeItem("player-" + player.player_id);
+        }
+      });
+      this.onPlayerDataChange();
+      this.saveSettings();
+    }
+  }
+
   clearSavedData(event) {
     var doubleCheck = confirm("Are you sure you want to clear price data and restart the auction?");
     if(doubleCheck) {
@@ -333,7 +350,7 @@ class App extends React.Component {
             <Nav>
               <NavItem eventKey={1} href="#" onClick={this.open}>Configure league</NavItem>
               <NavItem eventKey={2} href="#" onClick={this.clearSavedData}>Restart auction</NavItem>
-              <NavItem eventKey={3} href="#" onClick={this.clearSavedData}>Restart auction2</NavItem>
+              <NavItem eventKey={3} href="#" onClick={this.resetKeepers}>Reset keepers</NavItem>
             </Nav>
           </Navbar>
           <Row>
