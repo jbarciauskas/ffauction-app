@@ -67,8 +67,9 @@ export default class extends Component {
     onPlayerDataChange(event) {
       let player = event.data;
       player.purchase_price = parseFloat(player.purchase_price);
-      if(player.purchase_price == null || player.purchase_price == 0) {
-        player.purchase_price = 0
+      if(player.purchase_price == null || player.purchase_price == 0 || isNaN(player.purchase_price)) {
+        player.purchase_price = 0;
+        player.draft_team = null;
         localStorage.removeItem("player-" + player.player_id);
       }
       else {
