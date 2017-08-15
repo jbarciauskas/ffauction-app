@@ -140,7 +140,7 @@ export default class extends Component {
             <div >
               <Row>
                 <Col md={4}>
-                  <FormControl style={{"margin-bottom":"5px"}} type="text"
+                  <FormControl style={{marginBottom:"5px"}} type="text"
                     onChange={this.onQuickFilterText.bind(this)}
                     placeholder="Type player name, position, or team to filter..."/>
                 </Col>

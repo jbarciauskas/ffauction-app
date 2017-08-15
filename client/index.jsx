@@ -179,7 +179,7 @@ class App extends React.Component {
     var teamControlId = "team." + i;
     var yourTeamNote = ""
     if(i == 0) yourTeamNote = <i>(your team)</i>;
-    return <Row style={{"padding-bottom": "5px"}} key={teamControlId}>
+    return <Row style={{paddingBottom: "5px"}} key={teamControlId}>
       <FormGroup controlId={teamControlId}>
         <Col md={3}>
           <ControlLabel >Team #{i+1}</ControlLabel> {' '}{yourTeamNote}
@@ -316,7 +316,7 @@ class App extends React.Component {
       </Tooltip>
     );
     let tabPadding = {
-        "padding-top": "2rem",
+        paddingTop: "2rem",
     };
 
     let teamListComponents = [];
@@ -630,7 +630,7 @@ class App extends React.Component {
         </Row>
         <Row>
         <Col md={12}>
-        <p style={{"margin-top":"10px"}}>Created by <a href="https://github.com/jbarciauskas">Joel Barciauskas</a>, full source available on <a href="https://github.com/jbarciauskas/ffauction-app">GitHub</a> and <a href="https://spdx.org/licenses/GPL-3.0.html">licensed under GPL-3.0</a></p>
+        <p style={{marginTop:"10px"}}>Created by <a href="https://github.com/jbarciauskas">Joel Barciauskas</a>, full source available on <a href="https://github.com/jbarciauskas/ffauction-app">GitHub</a> and <a href="https://spdx.org/licenses/GPL-3.0.html">licensed under GPL-3.0</a></p>
         </Col>
         </Row>
         </Grid>
