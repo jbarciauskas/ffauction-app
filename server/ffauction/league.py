@@ -1,4 +1,4 @@
-from math import floor
+from math import floor, ceil
 
 
 class League:
@@ -48,10 +48,16 @@ class League:
 
         if self.user_settings.bench_allocation is None:
             for position in ["QB", "RB", "WR", "TE"]:
-                roster_spots[position] = int(
-                    floor(starter_counts[position]
-                          + (float(starter_counts[position]) / float(total_starters)
-                             * total_bench_size)))
+                if position in ["RB", "WR"]:
+                    roster_spots[position] = int(
+                        ceil(starter_counts[position]
+                            + (float(starter_counts[position]) / float(total_starters)
+                                * total_bench_size)))
+                else:
+                    roster_spots[position] = int(
+                        floor(starter_counts[position]
+                            + (float(starter_counts[position]) / float(total_starters)
+                                * total_bench_size)))
         else:
             for position in self.user_settings.bench_allocation:
                 roster_spots[position] += self.user_settings.bench_allocation[position]
