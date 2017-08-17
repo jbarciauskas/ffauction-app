@@ -13,8 +13,10 @@ class UserSettings:
         self.bench = settings_dict['roster']['bench']
         self.flex_type = settings_dict['flex_type']
         self.starter_budget_pct = settings_dict['starter_budget_pct']
-#        self.bench_allocation = settings_dict['override_bench_allocation']
-        self.bench_allocation = None
+        if len(settings_dict['override_bench_allocation'].keys()) > 0:
+            self.bench_allocation = settings_dict['override_bench_allocation']
+        else:
+            self.bench_allocation = None
 
     def get_roster_size(self):
         return (self.get_num_starters() + self.bench)
