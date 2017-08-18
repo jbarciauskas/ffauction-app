@@ -20,6 +20,7 @@ DEFAULTS = {
     "flex_type": "rb/wr/te",
     "starter_budget_pct": 0.88,
     "override_bench_allocation": {},
+    "override_bench": False,
     "roster": {
         "qb": 1,
         "rb": 2,

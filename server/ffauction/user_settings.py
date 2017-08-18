@@ -13,7 +13,7 @@ class UserSettings:
         self.bench = settings_dict['roster']['bench']
         self.flex_type = settings_dict['flex_type']
         self.starter_budget_pct = settings_dict['starter_budget_pct']
-        if len(settings_dict['override_bench_allocation'].keys()) > 0:
+        if settings_dict['override_bench']:
             self.bench_allocation = settings_dict['override_bench_allocation']
         else:
             self.bench_allocation = None

@@ -3,7 +3,7 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import {Accordion,Panel,Navbar,Nav,NavItem,Button,Grid,Row,Col,ControlLabel,FormControl,FormGroup,Form,Modal,OverlayTrigger,Popover,Tabs,Tab,Table,Tooltip} from 'react-bootstrap';
+import {Checkbox,Accordion,Panel,Navbar,Nav,NavItem,Button,Grid,Row,Col,ControlLabel,FormControl,FormGroup,Form,Modal,OverlayTrigger,Popover,Tabs,Tab,Table,Tooltip} from 'react-bootstrap';
 
 
 // pull in the ag-grid styles we're interested in
@@ -23,7 +23,6 @@ class App extends React.Component {
           "team_budget": 200,
           "flex_type": "rb/wr/te",
           "starter_budget_pct": 0.88,
-          "override_bench_allocation": {},
           "roster": {
               "qb": 1,
               "rb": 2,
@@ -49,10 +48,15 @@ class App extends React.Component {
               "recYds": 10,
               "recTds": 6,
               "fumbles": -2
-          }
+          },
+          "override_bench": false,
+          "override_bench_allocation": {}
       };
     }
     else this.leagueSettings = JSON.parse(this.leagueSettings);
+    if(!this.leagueSettings.hasOwnProperty('override_bench')) {
+      this.leagueSettings['override_bench'] = false;
+    }
 
     if(!this.teamList) {
       this.teamList = [];
@@ -144,32 +148,38 @@ class App extends React.Component {
 
   onSettingsChange(e) {
     if(e.target.id == 'num_teams') this.leagueSettings.num_teams = parseInt(e.target.value);
-    if(e.target.id == 'team_budget') this.leagueSettings.team_budget = parseInt(e.target.value);
-    if(e.target.id == 'starter_budget_pct') this.leagueSettings.starter_budget_pct = parseFloat(e.target.value/100);
-    if(e.target.id == 'roster[qb]') this.leagueSettings.roster.qb = parseInt(e.target.value);
-    if(e.target.id == 'roster[rb]') this.leagueSettings.roster.rb = parseInt(e.target.value);
-    if(e.target.id == 'roster[wr]') this.leagueSettings.roster.wr = parseInt(e.target.value);
-    if(e.target.id == 'roster[te]') this.leagueSettings.roster.te = parseInt(e.target.value);
-    if(e.target.id == 'roster[flex]') this.leagueSettings.roster.flex = parseInt(e.target.value);
-    if(e.target.id == 'roster[k]') this.leagueSettings.roster.k = parseInt(e.target.value);
-    if(e.target.id == 'roster[team_def]') this.leagueSettings.roster.team_def = parseInt(e.target.value);
-    if(e.target.id == 'roster[bench]') this.leagueSettings.roster.bench = parseInt(e.target.value);
-    if(e.target.id == 'scoring[passYds]') this.leagueSettings.scoring.passYds = parseInt(e.target.value);
-    if(e.target.id == 'scoring[passComp]') this.leagueSettings.scoring.passComp = parseFloat(e.target.value);
-    if(e.target.id == 'scoring[passTds]') this.leagueSettings.scoring.passTds = parseInt(e.target.value);
-    if(e.target.id == 'scoring[sacks]') this.leagueSettings.scoring.sacks = parseFloat(e.target.value);
-    if(e.target.id == 'scoring[passInt]') this.leagueSettings.scoring.passInt = parseFloat(e.target.value);
-    if(e.target.id == 'scoring[rushYds]') this.leagueSettings.scoring.rushYds = parseInt(e.target.value);
-    if(e.target.id == 'scoring[rushTds]') this.leagueSettings.scoring.rushTds = parseInt(e.target.value);
-    if(e.target.id == 'scoring[rushAtt]') this.leagueSettings.scoring.rushAtt = parseFloat(e.target.value);
-    if(e.target.id == 'scoring[fumbles]') this.leagueSettings.scoring.fumbles = parseFloat(e.target.value);
-    if(e.target.id == 'scoring[recYds]') this.leagueSettings.scoring.recYds = parseInt(e.target.value);
-    if(e.target.id == 'scoring[recTds]') this.leagueSettings.scoring.recTds = parseFloat(e.target.value);
-    if(e.target.id == 'scoring[rec]') this.leagueSettings.scoring.rec = parseFloat(e.target.value);
-    if(e.target.id == 'scoring[twoPts]') this.leagueSettings.scoring.twoPts = parseFloat(e.target.value);
+    else if(e.target.id == 'team_budget') this.leagueSettings.team_budget = parseInt(e.target.value);
+    else if(e.target.id == 'starter_budget_pct') this.leagueSettings.starter_budget_pct = parseFloat(e.target.value/100);
+    else if(e.target.id == 'roster[qb]') this.leagueSettings.roster.qb = parseInt(e.target.value);
+    else if(e.target.id == 'roster[rb]') this.leagueSettings.roster.rb = parseInt(e.target.value);
+    else if(e.target.id == 'roster[wr]') this.leagueSettings.roster.wr = parseInt(e.target.value);
+    else if(e.target.id == 'roster[te]') this.leagueSettings.roster.te = parseInt(e.target.value);
+    else if(e.target.id == 'roster[flex]') this.leagueSettings.roster.flex = parseInt(e.target.value);
+    else if(e.target.id == 'roster[k]') this.leagueSettings.roster.k = parseInt(e.target.value);
+    else if(e.target.id == 'roster[team_def]') this.leagueSettings.roster.team_def = parseInt(e.target.value);
+    else if(e.target.id == 'roster[bench]') this.leagueSettings.roster.bench = parseInt(e.target.value);
+    else if(e.target.id == 'scoring[passYds]') this.leagueSettings.scoring.passYds = parseInt(e.target.value);
+    else if(e.target.id == 'scoring[passComp]') this.leagueSettings.scoring.passComp = parseFloat(e.target.value);
+    else if(e.target.id == 'scoring[passTds]') this.leagueSettings.scoring.passTds = parseInt(e.target.value);
+    else if(e.target.id == 'scoring[sacks]') this.leagueSettings.scoring.sacks = parseFloat(e.target.value);
+    else if(e.target.id == 'scoring[passInt]') this.leagueSettings.scoring.passInt = parseFloat(e.target.value);
+    else if(e.target.id == 'scoring[rushYds]') this.leagueSettings.scoring.rushYds = parseInt(e.target.value);
+    else if(e.target.id == 'scoring[rushTds]') this.leagueSettings.scoring.rushTds = parseInt(e.target.value);
+    else if(e.target.id == 'scoring[rushAtt]') this.leagueSettings.scoring.rushAtt = parseFloat(e.target.value);
+    else if(e.target.id == 'scoring[fumbles]') this.leagueSettings.scoring.fumbles = parseFloat(e.target.value);
+    else if(e.target.id == 'scoring[recYds]') this.leagueSettings.scoring.recYds = parseInt(e.target.value);
+    else if(e.target.id == 'scoring[recTds]') this.leagueSettings.scoring.recTds = parseFloat(e.target.value);
+    else if(e.target.id == 'scoring[rec]') this.leagueSettings.scoring.rec = parseFloat(e.target.value);
+    else if(e.target.id == 'scoring[twoPts]') this.leagueSettings.scoring.twoPts = parseFloat(e.target.value);
+    else if(e.target.id == 'overrideBench') this.leagueSettings.override_bench = e.target.checked;
+    else if(e.target.id == 'benchSpots[qb]') this.leagueSettings.override_bench_allocation['QB'] = parseInt(e.target.value);
+    else if(e.target.id == 'benchSpots[rb]') this.leagueSettings.override_bench_allocation['RB'] = parseInt(e.target.value);
+    else if(e.target.id == 'benchSpots[wr]') this.leagueSettings.override_bench_allocation['WR'] = parseInt(e.target.value);
+    else if(e.target.id == 'benchSpots[te]') this.leagueSettings.override_bench_allocation['TE'] = parseInt(e.target.value);
     this.setState({
       leagueSettings: this.leagueSettings
     });
+    console.log(this.leagueSettings);
   }
 
   getTeamRow(i) {
@@ -483,6 +493,7 @@ class App extends React.Component {
                   </Row>
                 </Tab>
                 <Tab eventKey={2} title="Roster settings" style={tabPadding}>
+                <h4>Starters</h4>
                 <Row>
                   <Col xs={2}>
                     <FormGroup controlId="roster[qb]">
@@ -535,6 +546,41 @@ class App extends React.Component {
                     </FormGroup>
                   </Col>
                 </Row>
+                <h4>Allocate bench</h4>
+                <Row>
+                  <Col md={12}>
+                    <FormGroup controlId="overrideBench">
+                      <Checkbox style={{verticalAlign: "top"}} inline id="overrideBench" checked={this.state.leagueSettings.override_bench} onChange={this.onSettingsChange}/>
+                      <ControlLabel inline>Manually allocate bench spots?</ControlLabel>
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={2}>
+                    <FormGroup controlId="benchSpots[qb]">
+                      <ControlLabel >QBs</ControlLabel>
+                      <FormControl type="number" placeholder="1" value={this.state.leagueSettings.override_bench_allocation.QB} onChange={this.onSettingsChange}/>
+                    </FormGroup>
+                  </Col>
+                  <Col xs={2}>
+                    <FormGroup controlId="benchSpots[rb]">
+                      <ControlLabel >RBs</ControlLabel>
+                      <FormControl type="number" placeholder="2" value={this.state.leagueSettings.override_bench_allocation.RB} onChange={this.onSettingsChange}/>
+                    </FormGroup>
+                  </Col>
+                  <Col xs={2}>
+                    <FormGroup controlId="benchSpots[wr]">
+                      <ControlLabel >WRs</ControlLabel>
+                      <FormControl type="number" placeholder="2" value={this.state.leagueSettings.override_bench_allocation.WR} onChange={this.onSettingsChange}/>
+                    </FormGroup>
+                  </Col>
+                  <Col xs={2}>
+                    <FormGroup controlId="benchSpots[te]">
+                      <ControlLabel >TEs</ControlLabel>
+                      <FormControl type="number" placeholder="1" value={this.state.leagueSettings.override_bench_allocation.TE} onChange={this.onSettingsChange}/>
+                    </FormGroup>
+                  </Col>
+                 </Row>
                 </Tab>
                 <Tab eventKey={3} title="Scoring settings" style={tabPadding}>
                 <h4>Passing</h4>
@@ -684,9 +730,21 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
     return val1 - val2;
   });
 
-  sortedPlayersByValue.forEach((player) => {
-    if(player.purchase_price > 0) accumulatedValue += player.base_price - player.purchase_price;
+  let rosterCountsByPosition = {
+    'QB':1,
+    'WR':1,
+    'RB':1,
+    'TE':1,
+  };
 
+  sortedPlayersByValue.forEach((player) => {
+    if(player.purchase_price > 0) {
+      accumulatedValue += player.base_price - player.purchase_price;
+    }
+
+    if(player.base_price > 0) {
+      rosterCountsByPosition[player.position] += 1;
+    }
     usedBudget += player.purchase_price;
     // @TODO some other way to set a team as "yours"?
     if(teamList && player.draft_team == teamList[0]) {
@@ -708,6 +766,14 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
       }
     }
   });
+
+  if(players.length > 0) {
+    leagueSettings.override_bench_allocation = rosterCountsByPosition;
+    leagueSettings.override_bench_allocation['QB'] -= (leagueSettings.roster.qb * leagueSettings.num_teams);
+    leagueSettings.override_bench_allocation['RB'] -= (leagueSettings.roster.rb * leagueSettings.num_teams);
+    leagueSettings.override_bench_allocation['WR'] -= (leagueSettings.roster.wr * leagueSettings.num_teams);
+    leagueSettings.override_bench_allocation['TE'] -= (leagueSettings.roster.te * leagueSettings.num_teams);
+  }
 
   currentRoster.sort((a, b) => { return b.points - a.points });
   let rosterByPosition = {
