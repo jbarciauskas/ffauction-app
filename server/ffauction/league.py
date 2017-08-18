@@ -47,7 +47,6 @@ class League:
             total_starters += starter_counts[position]
 
         if self.user_settings.bench_allocation is None:
-            print(self.user_settings.bench_allocation)
             for position in ["QB", "RB", "WR", "TE"]:
                 if position in ["RB", "WR"]:
                     roster_spots[position] = int(
@@ -60,7 +59,6 @@ class League:
                             + (float(starter_counts[position]) / float(total_starters)
                                 * total_bench_size)))
         else:
-            print(self.user_settings.bench_allocation)
             for position in self.user_settings.bench_allocation:
                 roster_spots[position] = starter_counts[position] + self.user_settings.bench_allocation[position]
         return roster_spots
