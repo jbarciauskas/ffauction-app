@@ -1,46 +1,12 @@
 import React, {Component} from "react";
 import {AgGridReact} from "ag-grid-react";
 import {Button, Grid, Row, Col, FormControl, Checkbox} from "react-bootstrap";
+import {byeWeeks} from 'ByeWeeks';
 
 
 export default class extends Component {
     constructor(props) {
         super(props);
-
-        this.byeWeeks = {
-          'ATL': 5,
-          'DEN': 5,
-          'NO': 5,
-          'WAS': 5,
-          'BUF': 6,
-          'CIN': 6,
-          'DAL': 6,
-          'SEA': 6,
-          'DET': 7,
-          'HOU': 7,
-          'ARI': 8,
-          'GB': 8,
-          'JAC': 8,
-          'LAR': 8,
-          'NYG': 8,
-          'TEN': 8,
-          'CHI': 9,
-          'CLE': 9,
-          'LAC': 9,
-          'MIN': 9,
-          'NE': 9,
-          'PIT': 9,
-          'BAL': 10,
-          'KC': 10,
-          'OAK': 10,
-          'PHI': 10,
-          'CAR': 11,
-          'IND': 11,
-          'MIA': 11,
-          'NYJ': 11,
-          'SF': 11,
-          'TB': 11,
-        };
 
         this.clearFilters = this.clearFilters.bind(this);
         this.onHideUnavailablePlayers = this.onHideUnavailablePlayers.bind(this);
@@ -90,7 +56,7 @@ export default class extends Component {
     }
 
     lookupByeWeek(params) {
-      return this.byeWeeks[params.value];
+      return byeWeeks[params.value];
     }
 
     createColumnDefs() {

@@ -3,6 +3,7 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import {byeWeeks} from 'ByeWeeks';
 import {Checkbox,Accordion,Panel,Navbar,Nav,NavItem,Button,Grid,Row,Col,ControlLabel,FormControl,FormGroup,Form,Modal,OverlayTrigger,Popover,Tabs,Tab,Table,Tooltip} from 'react-bootstrap';
 
 
@@ -290,6 +291,8 @@ class App extends React.Component {
   getPlayerCell(player, points) {
     return <tr key={"my-team-row-" + player.player_id}>
       <td>{player.name}</td>
+      <td>{player.team}</td>
+      <td>{byeWeeks[player.team]}</td>
       <td><span className="pull-right">{points}</span></td>
       <td><span className="pull-right">${player.purchase_price}</span></td>
     </tr>;
@@ -320,6 +323,8 @@ class App extends React.Component {
         <thead style={headerStyle}>
           <tr>
             <th>{positionName}</th>
+            <th>Team</th>
+            <th>Bye</th>
             <th>Points</th> 
             <th>Price</th> 
           </tr>
