@@ -77,6 +77,8 @@ class App extends React.Component {
       showModal: false,
       leagueSettings: this.leagueSettings,
       teamList: this.teamList,
+      starterPF: 0,
+      benchPF: 0,
     };
 
     this.getPlayersOnMyTeam = this.getPlayersOnMyTeam.bind(this);
@@ -124,12 +126,19 @@ class App extends React.Component {
 
     axios.post(`/api/players`, this.leagueSettings)
     .then(res => {
-      let currentDraftStatus = calcCurrentDraftStatus(mergeSavedData(res.data), this.state.startingBudget, this.state.teamList, this.state.leagueSettings);
+      let players = null;
+      if(res.data.hasOwnProperty('players')) {
+        players = res.data.players;
+      }
+      else players = res.data;
+      let currentDraftStatus = calcCurrentDraftStatus(mergeSavedData(players), this.state.startingBudget, this.state.teamList, this.state.leagueSettings);
       this.setState({
         startingBudget: this.state.startingBudget,
-        rowData: res.data,
+        rowData: players,
         currentDraftStatus: currentDraftStatus,
-        showModal: this.state.showModal
+        showModal: this.state.showModal,
+        starterPF: res.data.starterPF.toFixed(4),
+        benchPF: res.data.benchPF.toFixed(4)
       });
     });
     localStorage.setItem('leagueSettings', JSON.stringify(this.leagueSettings));
@@ -335,14 +344,9 @@ class App extends React.Component {
 
 
   render() {
-    const popover = (
-      <Popover id="modal-popover" title="popover">
-        very popover. such engagement
-      </Popover>
-    );
-    const tooltip = (
-      <Tooltip id="modal-tooltip">
-        wow.
+   const starterPFTooltip = (
+      <Tooltip placement="right" className="in" id="tooltip-starter-pf">
+        Target this value to be 2-3x the BenchPF value by adjusting the starter budget percentage.
       </Tooltip>
     );
     let tabPadding = {
@@ -490,6 +494,24 @@ class App extends React.Component {
                         <ControlLabel >Starter Budget %</ControlLabel>
                         <FormControl type="number" value={this.state.leagueSettings.starter_budget_pct * 100} onChange={this.onSettingsChange} />
                       </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs={2}>
+                      <OverlayTrigger placement="right" overlay={starterPFTooltip}>
+                        <strong>StarterPF:</strong>
+                      </OverlayTrigger>
+                    </Col>
+                    <Col xs={2}>
+                      {this.state.starterPF}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs={2}>
+                      <strong>BenchPF:</strong>
+                    </Col>
+                    <Col xs={2}>
+                      {this.state.benchPF}
                     </Col>
                   </Row>
                 </Tab>

@@ -24,6 +24,8 @@ class PriceModel:
                                  (player.bench_vbd - player.starter_vbd)
                                  * bench_pf)
 
+        return (starter_pf, bench_pf)
+
     def get_bench_pf(self, league):
         bench_budget = (league.user_settings.get_available_budget()
                         * (1 - league.user_settings.starter_budget_pct))

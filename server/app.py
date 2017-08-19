@@ -76,8 +76,12 @@ def get_players():
     vbd_model = VBDModel()
     vbd_model.calc_vbd(league)
     price_model = PriceModel()
-    price_model.calc_base_prices(league)
-    return json.dumps(player_set.get_all(), cls=PlayerPriceJsonEncoder)
+    (starter_pf, bench_pf) = price_model.calc_base_prices(league)
+    return json.dumps({
+        'starterPF': starter_pf,
+        'benchPF': bench_pf,
+        'players': player_set.get_all()
+        }, cls=PlayerPriceJsonEncoder)
 
 
 @app.route('/api/uploadProjections', methods=['POST'])
