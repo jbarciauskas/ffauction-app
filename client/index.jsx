@@ -557,6 +557,23 @@ class App extends React.Component {
                   </Col>
                 </Row>
                 <Row>
+                  <Col md={12}>
+                    <strong>Bench size:</strong> {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.bench}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={12}>
+                    <strong>Allocated:</strong> {this.state.leagueSettings.override_bench_allocation.QB
+                                + this.state.leagueSettings.override_bench_allocation.RB
+                                + this.state.leagueSettings.override_bench_allocation.WR
+                                + this.state.leagueSettings.override_bench_allocation.TE}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={12} style={{paddingBottom: '15px'}}>
+                  </Col>
+                </Row>
+                <Row>
                   <Col xs={2}>
                     <FormGroup controlId="benchSpots[qb]">
                       <ControlLabel >QBs</ControlLabel>
