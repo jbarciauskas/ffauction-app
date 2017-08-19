@@ -122,8 +122,6 @@ class App extends React.Component {
       }
     }
 
-    this.state.showModal = false;
-
     axios.post(`/api/players`, this.leagueSettings)
     .then(res => {
       let players = null;
@@ -722,7 +720,8 @@ class App extends React.Component {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.saveSettings}>Save and update prices</Button>
+            <Button onClick={this.saveSettings}>Save and update prices</Button>{' '}
+            <Button onClick={this.close}>Close</Button>
           </Modal.Footer>
         </Modal>
         <Row>
