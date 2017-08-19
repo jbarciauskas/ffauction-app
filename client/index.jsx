@@ -738,6 +738,8 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
     'TE':1,
   };
 
+  let flexPlayers = [];
+
   sortedPlayersByValue.forEach((player) => {
     if(player.purchase_price > 0) {
       accumulatedValue += player.base_price - player.purchase_price;
@@ -745,7 +747,16 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
 
     if(player.base_price > 0) {
       rosterCountsByPosition[player.position] += 1;
+
+      if(rosterCountsByPosition[player.position] >
+          (leagueSettings.num_teams * leagueSettings.roster[player.position.toLowerCase()])) {
+        if((flexPlayers.length < leagueSettings.num_teams * leagueSettings.roster['flex'])
+            && (player.position == 'RB' || player.position == 'WR' || player.position == 'TE')) {
+          flexPlayers.push(player);
+        }
+      }
     }
+
     usedBudget += player.purchase_price;
     // @TODO some other way to set a team as "yours"?
     if(teamList && player.draft_team == teamList[0]) {
@@ -774,6 +785,9 @@ function calcCurrentDraftStatus(players, startingBudget, teamList, leagueSetting
     leagueSettings.override_bench_allocation['RB'] -= (leagueSettings.roster.rb * leagueSettings.num_teams);
     leagueSettings.override_bench_allocation['WR'] -= (leagueSettings.roster.wr * leagueSettings.num_teams);
     leagueSettings.override_bench_allocation['TE'] -= (leagueSettings.roster.te * leagueSettings.num_teams);
+    flexPlayers.forEach((player) => {
+      leagueSettings.override_bench_allocation[player.position] -= 1;
+    });
   }
 
   currentRoster.sort((a, b) => { return b.points - a.points });
