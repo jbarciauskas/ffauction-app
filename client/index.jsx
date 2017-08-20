@@ -404,23 +404,25 @@ class App extends React.Component {
               </Row>
               <Row>
               <Col md={12}>
-              <table>
-                <tr>
-                  <td style={{paddingRight: "20px"}}>QB</td>
-                  <td>{this.getCountsByPos('QB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.qb}</td>
-                </tr>
-                <tr>
-                  <td>RB</td>
-                  <td>{this.getCountsByPos('RB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.rb}</td>
-                </tr>
-                <tr>
-                  <td>WR</td>
-                  <td>{this.getCountsByPos('WR')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.wr}</td>
-                </tr>
-                <tr>
-                  <td>TE</td>
-                  <td>{this.getCountsByPos('TE')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.te}</td>
-                </tr>
+              <table style={{marginLeft: "20px"}}>
+                <tbody >
+                  <tr>
+                    <td style={{paddingRight: "20px"}}>QB</td>
+                    <td>{this.getCountsByPos('QB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.qb}</td>
+                  </tr>
+                  <tr>
+                    <td>RB</td>
+                    <td>{this.getCountsByPos('RB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.rb}</td>
+                  </tr>
+                  <tr>
+                    <td>WR</td>
+                    <td>{this.getCountsByPos('WR')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.wr}</td>
+                  </tr>
+                  <tr>
+                    <td>TE</td>
+                    <td>{this.getCountsByPos('TE')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.te}</td>
+                  </tr>
+                </tbody>
               </table>
               </Col>
               </Row>
