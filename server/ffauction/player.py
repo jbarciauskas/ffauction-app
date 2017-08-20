@@ -8,6 +8,7 @@ class Player:
         self.projected_points = 0
         self.starter_vbd = 0
         self.bench_vbd = 0
+        self.avg_vbd = 0
         self.base_price = 0
 
     def init_from_row(self, row):
@@ -57,6 +58,7 @@ class PlayerPriceJsonEncoder(json.JSONEncoder):
                 "team": obj.team,
                 "points": obj.projected_points,
                 "base_price": obj.base_price,
+                "avg_vbd": obj.avg_vbd,
             }
         return json.JSONEncoder.default(self, obj)
 
@@ -76,6 +78,14 @@ class PlayerSet:
         self.TE = []
         self.K = []
         self.DST = []
+
+    def get_position_players_by_position(self):
+        return {
+            'QB': self.QB,
+            'RB': self.RB,
+            'WR': self.WR,
+            'TE': self.TE
+        }
 
     def get_all(self):
         return self.QB + self.RB + self.WR + self.TE + self.K + self.DST

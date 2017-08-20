@@ -2,16 +2,27 @@ class VBDModel:
     def calc_vbd(self, league):
         starter_counts = league.get_starting_spots()
         roster_counts = league.get_roster_spots(starter_counts)
-        starters = league.player_set.get_top_n(starter_counts)
-        self.set_vbd(starters, 'starter_vbd')
-        self.set_vbd(league.player_set.get_top_n(roster_counts), 'bench_vbd')
+        players_by_position = league.player_set.get_position_players_by_position()
+        self.set_vbd(players_by_position, starter_counts, 'starter_vbd')
+        self.set_vbd(players_by_position, roster_counts, 'bench_vbd', True)
+        for position in players_by_position:
+            for player in players_by_position[position]:
+                player.avg_vbd = (player.starter_vbd + player.bench_vbd / 2)
 
-    def set_vbd(self, list_of_players, target_field):
-        for position in list_of_players:
-            pos_base_vbd = list_of_players[position][-1].projected_points
-            for player in list_of_players[position]:
-                setattr(player, target_field,
-                        player.projected_points - pos_base_vbd)
+    def set_vbd(self,
+                players_by_position,
+                position_counts,
+                target_field,
+                assign_negative_vbd=False):
+        for position in players_by_position:
+            players_by_position[position].sort(key=lambda player: player.projected_points, reverse=True)
+            pos_base_vbd = (players_by_position
+                            [position]
+                            [position_counts[position]-1]
+                            .projected_points)
+            for player in players_by_position[position]:
+                new_vbd = player.projected_points - pos_base_vbd
+                setattr(player, target_field, new_vbd)
 
 
 class PriceModel:
@@ -20,9 +31,9 @@ class PriceModel:
         starter_pf = self.get_starter_pf(league, bench_pf)
 
         for player in league.player_set.get_all():
-            player.base_price = (player.starter_vbd * starter_pf +
-                                 (player.bench_vbd - player.starter_vbd)
-                                 * bench_pf)
+            player.base_price = max((player.starter_vbd * starter_pf +
+                                    (player.bench_vbd - player.starter_vbd)
+                                    * bench_pf), 0)
 
         return (starter_pf, bench_pf)
 
