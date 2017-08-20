@@ -1,3 +1,5 @@
+import numpy
+
 class VBDModel:
     def calc_vbd(self, league):
         starter_counts = league.get_starting_spots()
@@ -8,6 +10,7 @@ class VBDModel:
         for position in players_by_position:
             for player in players_by_position[position]:
                 player.avg_vbd = (player.starter_vbd + player.bench_vbd / 2)
+        self.assign_tiers(players_by_position)
 
     def set_vbd(self,
                 players_by_position,
@@ -23,6 +26,14 @@ class VBDModel:
             for player in players_by_position[position]:
                 new_vbd = player.projected_points - pos_base_vbd
                 setattr(player, target_field, new_vbd)
+
+    def assign_tiers(self, players_by_position):
+        for position in players_by_position:
+            avg_vbds = [player.avg_vbd for player in players_by_position[position] if player.avg_vbd >= 0]
+            std_dev = numpy.std(avg_vbds)
+            max_vbd = players_by_position[position][0].avg_vbd
+            for player in players_by_position[position]:
+                player.tier = player.position + str(int(round(((max_vbd - player.avg_vbd) / (std_dev / 2)) + 1)))
 
 
 class PriceModel:
