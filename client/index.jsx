@@ -81,6 +81,7 @@ class App extends React.Component {
       benchPF: 0,
     };
 
+    this.getCountsByPos = this.getCountsByPos.bind(this);
     this.getPlayersOnMyTeam = this.getPlayersOnMyTeam.bind(this);
     this.getMyTeamTable = this.getMyTeamTable.bind(this);
     this.getMaxBid = this.getMaxBid.bind(this);
@@ -338,7 +339,13 @@ class App extends React.Component {
     </Col>;
   }
 
-
+  getCountsByPos(position) {
+    let count = 0;
+    this.state.rowData.forEach((player) => {
+      if(player.position == position && player.purchase_price > 0) count++;
+    });
+    return count;
+  }
 
   render() {
    const starterPFTooltip = (
@@ -390,7 +397,34 @@ class App extends React.Component {
               Max bid: <b>${this.getMaxBid()}</b>
               </Col>
               </Row>
+              <Row>
+              <Col md={12}>
+              <h4>Starter counts</h4>
               </Col>
+              </Row>
+              <Row>
+              <Col md={12}>
+              <table>
+                <tr>
+                  <td style={{paddingRight: "20px"}}>QB</td>
+                  <td>{this.getCountsByPos('QB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.qb}</td>
+                </tr>
+                <tr>
+                  <td>RB</td>
+                  <td>{this.getCountsByPos('RB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.rb}</td>
+                </tr>
+                <tr>
+                  <td>WR</td>
+                  <td>{this.getCountsByPos('WR')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.wr}</td>
+                </tr>
+                <tr>
+                  <td>TE</td>
+                  <td>{this.getCountsByPos('TE')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.te}</td>
+                </tr>
+              </table>
+              </Col>
+              </Row>
+             </Col>
               <Col md={9}>
               <Table striped bordered condensed hover>
               <thead>
