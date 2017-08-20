@@ -88,7 +88,6 @@ export default class extends Component {
 
     onHideUnavailablePlayers(event) {
       var purchasePriceFilter = this.gridApi.getFilterInstance('purchase_price');
-      console.log(purchasePriceFilter);
       purchasePriceFilter.setModel({
         type: 'equals',
         filter: 0,
