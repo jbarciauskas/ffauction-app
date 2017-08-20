@@ -187,7 +187,6 @@ class App extends React.Component {
     this.setState({
       leagueSettings: this.leagueSettings
     });
-    console.log(this.leagueSettings);
   }
 
   getTeamRow(i) {
