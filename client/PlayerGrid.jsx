@@ -35,7 +35,7 @@ export default class extends Component {
       player.purchase_price = parseFloat(player.purchase_price);
       if(player.purchase_price == null || player.purchase_price == 0 || isNaN(player.purchase_price)) {
         player.purchase_price = 0;
-        player.draft_team = null;
+        if(event.column.colId == 'purchase_price') player.draft_team = null;
       }
 
       localStorage.setItem("player-" + event.data.player_id, JSON.stringify({
@@ -47,7 +47,9 @@ export default class extends Component {
 
       // bubble up
       this.props.onPlayerDataChange(event);
-      setTimeout(() => {this.gridApi.setRowData(this.props.rowData)}, 0);
+      if(event.column.colId == 'purchase_price') {
+        setTimeout(() => {this.gridApi.setRowData(this.props.rowData)}, 0);
+      }
     }
 
     selectDropDownCellRenderer(params) {
