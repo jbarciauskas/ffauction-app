@@ -913,6 +913,7 @@ function mergeSavedData(players) {
       player.purchase_price = savedPlayerData.purchase_price;
       player.draft_team = savedPlayerData.draft_team;
       player.keeper = savedPlayerData.keeper;
+      player.note = savedPlayerData.note;
     }
     else {
       player.purchase_price = 0;

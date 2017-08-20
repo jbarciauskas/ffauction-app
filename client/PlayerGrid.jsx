@@ -36,16 +36,15 @@ export default class extends Component {
       if(player.purchase_price == null || player.purchase_price == 0 || isNaN(player.purchase_price)) {
         player.purchase_price = 0;
         player.draft_team = null;
-        localStorage.removeItem("player-" + player.player_id);
       }
-      else {
-        localStorage.setItem("player-" + event.data.player_id, JSON.stringify({
-          "purchase_price": player.purchase_price,
-          "draft_team": player.draft_team,
-          "keeper": player.keeper,
-        }));
-      }
-      console.log(player);
+
+      localStorage.setItem("player-" + event.data.player_id, JSON.stringify({
+        "purchase_price": player.purchase_price,
+        "draft_team": player.draft_team,
+        "keeper": player.keeper,
+        "note": player.note,
+      }));
+
       // bubble up
       this.props.onPlayerDataChange(event);
       setTimeout(() => {this.gridApi.setRowData(this.props.rowData)}, 0);
@@ -73,6 +72,7 @@ export default class extends Component {
             {headerName: "Paid ($)", field: "purchase_price", filter: "number", cellRenderer: formatPurchasePrice, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
             {headerName: "Drafted by", field: "draft_team", filter: "text", cellEditor: 'select', cellEditorParams: {'values':this.props.teamList}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
             {headerName: "Keeper", field: "keeper", filter: "text", cellEditor: 'select', cellEditorParams: {'values':['Yes', 'No']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
+            {headerName: "Note", field: "note", filter: "text", cellEditor: 'select', cellEditorParams: {'values':['', 'Target', 'Sleeper', 'Avoid']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
         ];
     }
 
