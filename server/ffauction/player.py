@@ -36,6 +36,10 @@ class Player:
         for action in scoring:
             self.projected_points += getattr(self, action, 0) * scoring[action]
 
+    def init_from_dict(self, data):
+        for key in data:
+            setattr(self, key, data[key])
+
     def __str__(self):
         return "%s\t%s\t%s\t%f\t%f\t%f\t%f" % (self.name, self.position,
                                                self.team, self.projected_points,
@@ -54,7 +58,14 @@ class PlayerPriceJsonEncoder(json.JSONEncoder):
                 "points": obj.projected_points,
                 "base_price": obj.base_price,
             }
-        return super(PlayerPriceJsonEncoder, self).default(obj)
+        return json.JSONEncoder.default(self, obj)
+
+
+class FullPlayerJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Player):
+            return obj.__dict__
+        return json.JSONEncoder.default(self, obj)
 
 
 class PlayerSet:
@@ -90,6 +101,12 @@ class PlayerSet:
                                [:int(position_counts[position])])
         return top_n
 
+    def load_list(self, players):
+        for player_dict in players:
+            player = Player()
+            player.init_from_dict(player_dict)
+            self.add_player(player)
+
     def load_projection_stats_from_csv(self, uploaded_file):
         projections = uploaded_file.stream.read()
         projectionsCsv = projections.decode('utf-8')
@@ -103,7 +120,9 @@ class PlayerSet:
                 rowDict[headers[i]] = row[i]
 
             player.init_from_row(rowDict)
+            self.add_player(player)
 
+    def add_player(self, player):
             if player.position == 'QB':
                 self.QB.append(player)
             if player.position == 'RB':

@@ -6,7 +6,7 @@ import redis
 
 from auth import requires_auth
 from ffauction.league import League
-from ffauction.player import PlayerSet, PlayerPriceJsonEncoder
+from ffauction.player import PlayerSet, PlayerPriceJsonEncoder, FullPlayerJsonEncoder
 from ffauction.pricing import VBDModel, PriceModel
 from ffauction.user_settings import UserSettings
 
@@ -67,10 +67,17 @@ def get_players():
         settings_dict.update(request.json)
     user_settings = UserSettings(settings_dict)
     r = redis.from_url(os.environ.get("REDIS_URL"))
-    pickled_player_set = r.get('projections')
-    if not pickled_player_set:
-        return "No projections"
-    player_set = pickle.loads(pickled_player_set)
+    json_player_set = r.get('projections_json')
+    player_set = None
+    if not json_player_set:
+        pickle_player_set = r.get('projections')
+        if not pickle_player_set:
+            return "No projections"
+        player_set = pickle.loads(pickle_player_set)
+    else:
+        list_of_players = json.loads(json_player_set)
+        player_set = PlayerSet()
+        player_set.load_list(list_of_players)
     league = League(user_settings, player_set)
     league.calc_projected_points()
     vbd_model = VBDModel()
@@ -80,7 +87,7 @@ def get_players():
     return json.dumps({
         'starterPF': starter_pf,
         'benchPF': bench_pf,
-        'players': player_set.get_all()
+        'players': league.player_set.get_all()
         }, cls=PlayerPriceJsonEncoder)
 
 
@@ -93,7 +100,7 @@ def upload_projections():
     player_set = PlayerSet()
     player_set.load_projection_stats_from_csv(projections)
     r = redis.from_url(os.environ.get("REDIS_URL"))
-    r.set('projections', pickle.dumps(player_set))
+    r.set('projections_json', json.dumps(player_set.get_all(), cls=FullPlayerJsonEncoder))
     return "Success"
 
 
