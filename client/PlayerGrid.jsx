@@ -10,6 +10,7 @@ export default class extends Component {
 
         this.clearFilters = this.clearFilters.bind(this);
         this.onHideUnavailablePlayers = this.onHideUnavailablePlayers.bind(this);
+        this.onHideZeroPoints = this.onHideZeroPoints.bind(this);
         this.onPlayerDataChange = this.onPlayerDataChange.bind(this);
         this.onGridReady = this.onGridReady.bind(this);
         this.getRowStyle = this.getRowStyle.bind(this);
@@ -98,6 +99,15 @@ export default class extends Component {
       purchasePriceFilter.onFilterChanged();
     }
 
+    onHideZeroPoints(event) {
+      var pointsFilter = this.gridApi.getFilterInstance('points');
+      pointsFilter.setModel({
+        type: 'notEqual',
+        filter: 0
+      });
+      pointsFilter.onFilterChanged();
+    }
+
     clearFilters(event) {
       this.gridApi.setFilterModel(null);
       this.gridApi.onFilterChanged();
@@ -116,8 +126,10 @@ export default class extends Component {
                     onChange={this.onQuickFilterText.bind(this)}
                     placeholder="Type player name, position, or team to filter..."/>
                 </Col>
-                <Col md={4}>
+                <Col md={8}>
                   <Button inline onClick={this.onHideUnavailablePlayers}>Hide unavailable players</Button>
+                  {' '}
+                  <Button inline onClick={this.onHideZeroPoints}>Hide players with 0 proj. pts.</Button>
                   {' '}
                   <Button inline onClick={this.clearFilters}>Clear filters</Button>
                 </Col>
