@@ -59,6 +59,11 @@ class App extends React.Component {
       this.leagueSettings['override_bench'] = false;
     }
 
+    let teamListJson = localStorage.getItem('teamList');
+    if(teamListJson) {
+      this.teamList = JSON.parse(teamListJson);
+    }
+
     if(!this.teamList) {
       this.teamList = [];
       for(var i = 0; i < this.leagueSettings.num_teams; i++) {
@@ -122,6 +127,7 @@ class App extends React.Component {
         this.state.teamList.pop();
       }
     }
+    localStorage.setItem('teamList', JSON.stringify(this.state.teamList));
 
     axios.post(`/api/players`, this.leagueSettings)
     .then(res => {
@@ -135,6 +141,7 @@ class App extends React.Component {
         startingBudget: this.state.startingBudget,
         rowData: players,
         currentDraftStatus: currentDraftStatus,
+        teamList: this.state.teamList,
         showModal: this.state.showModal,
         starterPF: res.data.starterPF.toFixed(4),
         benchPF: res.data.benchPF.toFixed(4)

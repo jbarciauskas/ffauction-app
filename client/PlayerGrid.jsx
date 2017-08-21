@@ -72,7 +72,7 @@ export default class extends Component {
             {headerName: "Base Value ($)", field: "base_price", filter: "number", cellRenderer: formatPriceFloat, sortingOrder: ['desc','asc'], width: 150},
             {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", cellRenderer: formatPriceFloat, sort: 'desc', sortingOrder: ['desc','asc'], width: 150},
             {headerName: "Paid ($)", field: "purchase_price", filter: "number", cellRenderer: formatPurchasePrice, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
-            {headerName: "Drafted by", field: "draft_team", filter: "text", cellEditor: 'select', cellEditorParams: {'values':[''].concat(this.props.teamList)}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
+            {headerName: "Drafted by", field: "draft_team", filter: "text", cellEditor: 'select', cellEditorParams: {'values':this.props.teamList}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
             {headerName: "Keeper", field: "keeper", filter: "text", cellEditor: 'select', cellEditorParams: {'values':['Yes', 'No']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
             {headerName: "Note", field: "note", filter: "text", cellEditor: 'select', cellEditorParams: {'values':['', 'Target', 'Sleeper', 'Avoid']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
         ];
