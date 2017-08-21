@@ -31,6 +31,7 @@ export const byeWeeks = {
   NYJ: 11,
   SF: 11,
   TB: 11,
+  FA: 0
 };
 
 
