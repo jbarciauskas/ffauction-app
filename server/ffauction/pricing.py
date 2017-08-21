@@ -25,6 +25,9 @@ class VBDModel:
                             .projected_points)
             for player in players_by_position[position]:
                 new_vbd = player.projected_points - pos_base_vbd
+                if not assign_negative_vbd and new_vbd < 0:
+                    new_vbd = 0
+
                 setattr(player, target_field, new_vbd)
 
     def assign_tiers(self, players_by_position):
@@ -42,9 +45,9 @@ class PriceModel:
         starter_pf = self.get_starter_pf(league, bench_pf)
 
         for player in league.player_set.get_all():
-            player.base_price = max((player.starter_vbd * starter_pf +
+            player.base_price = (player.starter_vbd * starter_pf +
                                     (player.bench_vbd - player.starter_vbd)
-                                    * bench_pf), 0)
+                                    * bench_pf)
 
         return (starter_pf, bench_pf)
 
