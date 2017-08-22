@@ -63,19 +63,19 @@ export default class extends Component {
 
     createColumnDefs() {
         return [
-            {headerName: "Player name", field: "name", filter: "text"},
-            {headerName: "Pos", field: "position", filter: "text", width: 100},
-            {headerName: "Tier", field: "tier", filter: "text", sortingOrder: ['desc','asc'], width: 100},
-            {headerName: "Team", field: "team", filter: "text", width: 100},
-            {headerName: "Bye", field: "team", filter: "number", cellRenderer: this.lookupByeWeek, width: 100},
-            {headerName: "Pts", field: "points", filter: "number", cellRenderer: formatPoints, sortingOrder: ['desc','asc'], width: 100},
-            {headerName: "VOR", field: "avg_vbd", filter: "number", cellRenderer: formatPoints, sortingOrder: ['desc','asc'], width: 100},
-            {headerName: "Base Value ($)", field: "base_price", filter: "number", cellRenderer: formatPriceFloat, sortingOrder: ['desc','asc'], width: 150},
-            {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", cellRenderer: formatPriceFloat, sort: 'desc', sortingOrder: ['desc','asc'], width: 150},
-            {headerName: "Paid ($)", field: "purchase_price", filter: "number", cellRenderer: formatPurchasePrice, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
-            {headerName: "Drafted by", field: "draft_team", filter: "text", cellEditor: 'select', cellEditorParams: {'values':this.props.teamList}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
-            {headerName: "Keeper", field: "keeper", filter: "text", cellEditor: 'select', cellEditorParams: {'values':['Yes', 'No']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
-            {headerName: "Note", field: "note", filter: "text", cellEditor: 'select', cellEditorParams: {'values':['', 'Target', 'Sleeper', 'Avoid']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
+            {headerName: "Player name", field: "name", filter: "text", filterParams: { newRowsAction: 'keep' } },
+            {headerName: "Pos", field: "position", filter: "text", filterParams: { newRowsAction: 'keep' }, width: 100},
+            {headerName: "Tier", field: "tier", filter: "text", filterParams: { newRowsAction: 'keep' }, sortingOrder: ['desc','asc'], width: 100},
+            {headerName: "Team", field: "team", filter: "text", filterParams: { newRowsAction: 'keep' }, width: 100},
+            {headerName: "Bye", field: "team", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: this.lookupByeWeek, width: 100},
+            {headerName: "Pts", field: "points", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: formatPoints, sortingOrder: ['desc','asc'], width: 100},
+            {headerName: "VOR", field: "avg_vbd", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: formatPoints, sortingOrder: ['desc','asc'], width: 100},
+            {headerName: "Base Value ($)", field: "base_price", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: formatPriceFloat, sortingOrder: ['desc','asc'], width: 150},
+            {headerName: "Inf Value ($)", field: "inflated_price", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: formatPriceFloat, sort: 'desc', sortingOrder: ['desc','asc'], width: 150},
+            {headerName: "Paid ($)", field: "purchase_price", filterParams: { newRowsAction: 'keep' }, filter: "number", cellRenderer: formatPurchasePrice, sortingOrder: ['desc','asc'], editable: true, cellEditor: "text", onCellValueChanged:this.onPlayerDataChange},
+            {headerName: "Drafted by", field: "draft_team", filter: "text", filterParams: { newRowsAction: 'keep' }, cellEditor: 'select', cellEditorParams: {'values':this.props.teamList}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
+            {headerName: "Keeper", field: "keeper", filter: "text", filterParams: { newRowsAction: 'keep' }, cellEditor: 'select', cellEditorParams: {'values':['Yes', 'No']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
+            {headerName: "Note", field: "note", filter: "text", filterParams: { newRowsAction: 'keep' }, cellEditor: 'select', cellEditorParams: {'values':['', 'Target', 'Sleeper', 'Avoid']}, editable: true, onCellValueChanged:this.onPlayerDataChange, cellRenderer:this.selectDropDownCellRenderer},
         ];
     }
 
@@ -91,20 +91,34 @@ export default class extends Component {
 
     onHideUnavailablePlayers(event) {
       var purchasePriceFilter = this.gridApi.getFilterInstance('purchase_price');
-      purchasePriceFilter.setModel({
-        type: 'equals',
-        filter: 0,
-        filterTo: null
-      });
+      if(purchasePriceFilter.getModel() == null) {
+        purchasePriceFilter.setModel({
+          type: 'equals',
+          filter: 0,
+          filterTo: null
+        });
+        event.target.innerText = 'Show unavailable players';
+      }
+      else {
+        purchasePriceFilter.setModel(null);
+        event.target.innerText = 'Hide unavailable players';
+      }
       purchasePriceFilter.onFilterChanged();
     }
 
     onHideZeroPoints(event) {
       var pointsFilter = this.gridApi.getFilterInstance('points');
-      pointsFilter.setModel({
-        type: 'notEqual',
-        filter: 0
-      });
+      if(pointsFilter.getModel() == null) {
+        pointsFilter.setModel({
+          type: 'notEqual',
+          filter: 0
+        });
+        event.target.innerText = 'Show players with 0 proj. pts';
+      }
+      else {
+        pointsFilter.setModel(null);
+        event.target.innerText = 'Hide players with 0 proj. pts';
+      }
       pointsFilter.onFilterChanged();
     }
 
@@ -129,7 +143,7 @@ export default class extends Component {
                 <Col md={8}>
                   <Button inline onClick={this.onHideUnavailablePlayers}>Hide unavailable players</Button>
                   {' '}
-                  <Button inline onClick={this.onHideZeroPoints}>Hide players with 0 proj. pts.</Button>
+                  <Button inline onClick={this.onHideZeroPoints}>Hide players with 0 proj. pts</Button>
                   {' '}
                   <Button inline onClick={this.clearFilters}>Clear filters</Button>
                 </Col>
