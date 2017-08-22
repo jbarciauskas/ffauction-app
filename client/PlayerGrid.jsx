@@ -130,6 +130,7 @@ export default class extends Component {
     render() {
         let containerStyle = {
             height: "500px",
+            minWidth: "800px"
         };
 
         return (
