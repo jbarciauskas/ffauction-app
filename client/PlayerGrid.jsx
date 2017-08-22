@@ -48,7 +48,10 @@ export default class extends Component {
 
       // bubble up
       this.props.onPlayerDataChange(event);
-      if(event.column.colId == 'purchase_price') {
+      if(
+          (event.column.colId == 'purchase_price' || event.column.colId == 'draft_team')
+          && ((player.purchase_price == 0 && player.draft_team == null) || (player.purchase_price > 0 && player.draft_team != null))
+          ) {
         setTimeout(() => {this.gridApi.setRowData(this.props.rowData)}, 0);
       }
     }
