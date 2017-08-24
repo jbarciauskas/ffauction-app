@@ -100,11 +100,9 @@ export default class extends Component {
           filter: 0,
           filterTo: null
         });
-        event.target.innerText = 'Show unavailable players';
       }
       else {
         purchasePriceFilter.setModel(null);
-        event.target.innerText = 'Hide unavailable players';
       }
       purchasePriceFilter.onFilterChanged();
     }
@@ -116,16 +114,16 @@ export default class extends Component {
           type: 'notEqual',
           filter: 0
         });
-        event.target.innerText = 'Show players with 0 proj. pts';
       }
       else {
         pointsFilter.setModel(null);
-        event.target.innerText = 'Hide players with 0 proj. pts';
       }
       pointsFilter.onFilterChanged();
     }
 
     clearFilters(event) {
+      document.getElementById('hide-unavailable-check').checked = false;
+      document.getElementById('hide-zero-check').checked = false;
       this.gridApi.setFilterModel(null);
       this.gridApi.onFilterChanged();
     }
@@ -145,10 +143,10 @@ export default class extends Component {
                     placeholder="Type player name, position, or team to filter..."/>
                 </Col>
                 <Col md={8}>
-                  <Button inline onClick={this.onHideUnavailablePlayers}>Hide unavailable players</Button>
-                  {' '}
-                  <Button inline onClick={this.onHideZeroPoints}>Hide players with 0 proj. pts</Button>
-                  {' '}
+                  <Checkbox id="hide-unavailable-check" inline onChange={this.onHideUnavailablePlayers}>Hide unavailable players</Checkbox>
+                  <span style={{paddingLeft:"30px"}}/>
+                  <Checkbox id="hide-zero-check" inline onChange={this.onHideZeroPoints}>Hide players with 0 proj. pts</Checkbox>
+                  <span style={{paddingLeft:"30px"}}/>
                   <Button inline onClick={this.clearFilters}>Clear filters</Button>
                 </Col>
               </Row>
