@@ -130,6 +130,10 @@ export default class extends Component {
       this.setState({quickFilterText: ''});
     }
 
+    exportCSV(event) {
+      this.gridApi.exportDataAsCsv();
+    }
+
     render() {
         let containerStyle = {
             height: "500px",
@@ -151,6 +155,8 @@ export default class extends Component {
                   <Checkbox id="hide-zero-check" inline onChange={this.onHideZeroPoints}>Hide players with 0 proj. pts</Checkbox>
                   <span style={{paddingLeft:"30px"}}/>
                   <Button inline onClick={this.clearFilters}>Clear filters</Button>
+                  <span style={{paddingLeft:"30px"}}/>
+                  <a href="" onClick={this.exportCSV.bind(this)}>Export CSV</a>
                 </Col>
               </Row>
               <Row>
