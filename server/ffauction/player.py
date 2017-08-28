@@ -11,6 +11,8 @@ class Player:
         self.avg_vbd = 0
         self.base_price = 0
         self.tier = 0
+        self.percent_drop = 0
+        self.rank = 999
 
     def init_from_row(self, row):
         self.name = row['player']
@@ -61,6 +63,8 @@ class PlayerPriceJsonEncoder(json.JSONEncoder):
                 "base_price": obj.base_price,
                 "avg_vbd": obj.avg_vbd,
                 "tier": obj.tier,
+                "percent_drop": obj.percent_drop,
+                "rank": obj.rank,
             }
         return json.JSONEncoder.default(self, obj)
 

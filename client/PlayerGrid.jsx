@@ -67,8 +67,9 @@ export default class extends Component {
     createColumnDefs() {
         return [
             {headerName: "Player name", field: "name", filter: "text", filterParams: { newRowsAction: 'keep' } },
-            {headerName: "Pos", field: "position", filter: "text", filterParams: { newRowsAction: 'keep' }, width: 100},
+            {headerName: "Rank", field: "rank", filter: "text", filterParams: { newRowsAction: 'keep' }, width: 100},
             {headerName: "Tier", field: "tier", filter: "text", filterParams: { newRowsAction: 'keep' }, sortingOrder: ['desc','asc'], width: 100},
+            {headerName: "Drop", field: "percent_drop", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: formatPercentDrop, sortingOrder: ['desc','asc'], width: 100},
             {headerName: "Team", field: "team", filter: "text", filterParams: { newRowsAction: 'keep' }, width: 100},
             {headerName: "Bye", field: "team", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: this.lookupByeWeek, width: 100},
             {headerName: "Pts", field: "points", filter: "number", filterParams: { newRowsAction: 'keep' }, cellRenderer: formatPoints, sortingOrder: ['desc','asc'], width: 100},
@@ -188,6 +189,10 @@ export default class extends Component {
     }
 }
 
+function formatPercentDrop(params) {
+    let num = (params.value * 100).toFixed(2);
+    return '<span class="pull-right" style="padding-right: 2px">' + num + '</span>';
+}
 function formatPoints(params) {
     let num = parseFloat(Math.round(params.value * 100) / 100).toFixed(2);
     if(isNaN(num) || num === null) {

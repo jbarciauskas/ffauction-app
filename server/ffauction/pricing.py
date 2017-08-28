@@ -35,8 +35,18 @@ class VBDModel:
             avg_vbds = [player.avg_vbd for player in players_by_position[position] if player.avg_vbd >= 0]
             std_dev = numpy.std(avg_vbds)
             max_vbd = players_by_position[position][0].avg_vbd
+            last_player_points = players_by_position[position][0].projected_points
+            count = 1
             for player in players_by_position[position]:
                 player.tier = player.position + str(int(round(((max_vbd - player.avg_vbd) / (std_dev / 2)) + 1)))
+                if not last_player_points == 0:
+                    player.percent_drop = (player.projected_points - last_player_points) / last_player_points
+                else:
+                    player.percent_drop = 0
+                player.rank = player.position + str(count)
+
+                last_player_points = player.projected_points
+                count += 1
 
 
 class PriceModel:

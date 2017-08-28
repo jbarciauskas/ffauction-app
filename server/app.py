@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response
 import json
 import os
 import pickle
@@ -84,12 +84,17 @@ def get_players():
     vbd_model.calc_vbd(league)
     price_model = PriceModel()
     (starter_pf, bench_pf) = price_model.calc_base_prices(league)
-    return json.dumps({
+    data = json.dumps({
         'starterPF': starter_pf,
         'benchPF': bench_pf,
         'players': league.player_set.get_all()
         }, cls=PlayerPriceJsonEncoder)
 
+    resp = Response(response=data,
+                    status=200,
+                    mimetype="application/json")
+
+    return resp
 
 @app.route('/api/uploadProjections', methods=['POST'])
 @requires_auth
