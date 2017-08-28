@@ -148,6 +148,7 @@ class App extends React.Component {
       });
     });
     localStorage.setItem('leagueSettings', JSON.stringify(this.leagueSettings));
+    this.close();
   }
 
   close() {
