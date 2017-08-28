@@ -156,7 +156,7 @@ export default class extends Component {
                   <span style={{paddingLeft:"30px"}}/>
                   <Button inline onClick={this.clearFilters}>Clear filters</Button>
                   <span style={{paddingLeft:"30px"}}/>
-                  <a href="" onClick={this.exportCSV.bind(this)}>Export CSV</a>
+                  <a href="javascript:void(0);" onClick={this.exportCSV.bind(this)}>Export CSV</a>
                 </Col>
               </Row>
               <Row>
