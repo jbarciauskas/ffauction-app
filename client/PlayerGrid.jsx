@@ -124,8 +124,10 @@ export default class extends Component {
     clearFilters(event) {
       document.getElementById('hide-unavailable-check').checked = false;
       document.getElementById('hide-zero-check').checked = false;
+      document.getElementById('quick-text-filter').value = "";
       this.gridApi.setFilterModel(null);
       this.gridApi.onFilterChanged();
+      this.setState({quickFilterText: ''});
     }
 
     render() {
@@ -140,6 +142,7 @@ export default class extends Component {
                 <Col md={4}>
                   <FormControl style={{marginBottom:"5px"}} type="text"
                     onChange={this.onQuickFilterText.bind(this)}
+                    id="quick-text-filter"
                     placeholder="Type player name, position, or team to filter..."/>
                 </Col>
                 <Col md={8}>
