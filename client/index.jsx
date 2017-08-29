@@ -350,7 +350,7 @@ class App extends React.Component {
   getCountsByPos(position) {
     let count = 0;
     this.state.rowData.forEach((player) => {
-      if(player.position == position && player.purchase_price > 0) count++;
+      if((player.position == position || position == 'all') && player.purchase_price > 0) count++;
     });
     return count;
   }
@@ -415,7 +415,7 @@ class App extends React.Component {
               <table style={{marginLeft: "20px"}}>
                 <tbody >
                   <tr>
-                    <td style={{paddingRight: "20px"}}>QB</td>
+                    <td >QB</td>
                     <td>{this.getCountsByPos('QB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.qb}</td>
                   </tr>
                   <tr>
@@ -429,6 +429,10 @@ class App extends React.Component {
                   <tr>
                     <td>TE</td>
                     <td>{this.getCountsByPos('TE')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.te}</td>
+                  </tr>
+                  <tr>
+                    <td style={{paddingRight: "10px"}}><strong>Picks made:</strong></td>
+                    <td>{this.getCountsByPos('all')}</td>
                   </tr>
                 </tbody>
               </table>
