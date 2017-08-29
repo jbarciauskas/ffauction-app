@@ -134,6 +134,22 @@ export default class extends Component {
       this.gridApi.exportDataAsCsv();
     }
 
+    togglePositionFilter(event, position) {
+      var positionFilter = this.gridApi.getFilterInstance('position');
+      var positionModel = positionFilter.getModel();
+      console.log(positionModel);
+      if(positionModel == null) {
+        positionFilter.setModel({
+          type: 'equals',
+          filter: position
+        });
+      }
+      else if(positionModel.filter.toLowerCase() == position.toLowerCase()) {
+        positionFilter.setModel(null);
+      }
+      positionFilter.onFilterChanged();
+    }
+
     render() {
         let containerStyle = {
             height: "500px",
@@ -143,20 +159,29 @@ export default class extends Component {
         return (
             <div >
               <Row>
-                <Col md={4}>
+                <Col md={3}>
                   <FormControl style={{marginBottom:"5px"}} type="text"
                     onChange={this.onQuickFilterText.bind(this)}
                     id="quick-text-filter"
-                    placeholder="Type player name, position, or team to filter..."/>
+                    placeholder="Enter player name, position, or team"/>
                 </Col>
-                <Col md={8}>
-                  <Checkbox id="hide-unavailable-check" inline onChange={this.onHideUnavailablePlayers}>Hide unavailable players</Checkbox>
-                  <span style={{paddingLeft:"30px"}}/>
-                  <Checkbox id="hide-zero-check" inline onChange={this.onHideZeroPoints}>Hide players with 0 proj. pts</Checkbox>
-                  <span style={{paddingLeft:"30px"}}/>
-                  <Button inline onClick={this.clearFilters}>Clear filters</Button>
-                  <span style={{paddingLeft:"30px"}}/>
-                  <a href="javascript:void(0);" onClick={this.exportCSV.bind(this)}>Export CSV</a>
+                <Col md={3}>
+                  <Button inline onClick={((event) => { this.togglePositionFilter(event, 'QB'); }).bind(this)}>QBs</Button>
+                  <Button inline onClick={((event) => { this.togglePositionFilter(event, 'RB'); }).bind(this)}>RBs</Button>
+                  <Button inline onClick={((event) => { this.togglePositionFilter(event, 'WR'); }).bind(this)}>WRs</Button>
+                  <Button inline onClick={((event) => { this.togglePositionFilter(event, 'TE'); }).bind(this)}>TEs</Button>
+                </Col>
+                <Col md={2}>
+                  <Checkbox id="hide-unavailable-check" inline onChange={this.onHideUnavailablePlayers}>Hide drafted players</Checkbox>
+                </Col>
+                <Col md={2}>
+                  <Checkbox id="hide-zero-check" inline onChange={this.onHideZeroPoints}>Hide zero-point players</Checkbox>
+                </Col>
+                <Col md={1}>
+                  <Button inline onClick={this.clearFilters}>Show all</Button>
+                </Col>
+                <Col md={1}>
+                  <Button inline onClick={this.exportCSV.bind(this)}>Export</Button>
                 </Col>
               </Row>
               <Row>
