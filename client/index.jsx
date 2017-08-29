@@ -431,7 +431,7 @@ class App extends React.Component {
                     <td>{this.getCountsByPos('TE')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.te}</td>
                   </tr>
                   <tr>
-                    <td style={{paddingRight: "10px"}}><strong>Picks made:</strong></td>
+                    <td style={{paddingRight: "10px"}}><strong>Live picks made:</strong></td>
                     <td>{this.getCountsByPos('all')}</td>
                   </tr>
                 </tbody>
