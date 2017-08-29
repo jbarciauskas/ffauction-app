@@ -350,7 +350,7 @@ class App extends React.Component {
   getCountsByPos(position) {
     let count = 0;
     this.state.rowData.forEach((player) => {
-      if((player.position == position || position == 'all') && player.purchase_price > 0) count++;
+      if((player.position == position || (player.keeper == 'No' && position == 'all')) && player.purchase_price > 0) count++;
     });
     return count;
   }
