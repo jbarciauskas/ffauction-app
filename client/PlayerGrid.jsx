@@ -137,14 +137,13 @@ export default class extends Component {
     togglePositionFilter(event, position) {
       var positionFilter = this.gridApi.getFilterInstance('position');
       var positionModel = positionFilter.getModel();
-      console.log(positionModel);
-      if(positionModel == null) {
+      if(positionModel == null || positionModel.filter.toLowerCase() != position.toLowerCase()) {
         positionFilter.setModel({
           type: 'equals',
           filter: position
         });
       }
-      else if(positionModel.filter.toLowerCase() == position.toLowerCase()) {
+      else {
         positionFilter.setModel(null);
       }
       positionFilter.onFilterChanged();
