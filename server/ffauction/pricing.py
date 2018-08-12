@@ -9,7 +9,7 @@ class VBDModel:
         self.set_vbd(players_by_position, roster_counts, 'bench_vbd', True)
         for position in players_by_position:
             for player in players_by_position[position]:
-                player.avg_vbd = (player.starter_vbd + player.bench_vbd / 2)
+                player.avg_vbd = ((player.starter_vbd + player.bench_vbd) / 2)
         self.assign_tiers(players_by_position)
 
     def set_vbd(self,
