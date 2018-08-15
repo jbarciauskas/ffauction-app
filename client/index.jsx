@@ -87,6 +87,8 @@ class App extends React.Component {
     };
 
     this.getCountsByPos = this.getCountsByPos.bind(this);
+    this.getYourCountsByPos = this.getYourCountsByPos.bind(this);
+    this.getYourSpendByPos = this.getYourSpendByPos.bind(this);
     this.getPlayersOnMyTeam = this.getPlayersOnMyTeam.bind(this);
     this.getMyTeamTable = this.getMyTeamTable.bind(this);
     this.getMaxBid = this.getMaxBid.bind(this);
@@ -355,6 +357,28 @@ class App extends React.Component {
     return count;
   }
 
+  getYourCountsByPos(position) {
+    let count = 0;
+    let rosterByPosition = this.state.currentDraftStatus.rosterByPosition;
+    let rows = [];
+    rosterByPosition[position].forEach((player) => {
+      count++
+    });
+
+    return count;
+  }
+
+  getYourSpendByPos(position) {
+    let sum = 0;
+    let rosterByPosition = this.state.currentDraftStatus.rosterByPosition;
+    let rows = [];
+    rosterByPosition[position].forEach((player) => {
+      sum += player.purchase_price
+    });
+
+    return sum;
+  }
+
   render() {
    const starterPFTooltip = (
       <Tooltip placement="right" className="in" id="tooltip-starter-pf">
@@ -393,53 +417,58 @@ class App extends React.Component {
           <Accordion defaultActiveKey="1">
             <Panel header="Draft details" eventKey="1">
             <Row>
-              <Col md={3}>
+              <Col md={2}>
               <Row>
+              <Col md={12}>
+              <h3>Pick #{this.getCountsByPos('all')+1}</h3>
+              </Col>
               <Col md={12}>
               Inflation rate: <b>{this.formatInflationRate(this.state.currentDraftStatus.inflationRate)}</b>
               </Col>
               <Col md={12}>
-              My remaining budget: <b>${this.state.leagueSettings.team_budget - this.state.currentDraftStatus.mySpentBudget}</b>
+              Remaining budget: <b>${this.state.leagueSettings.team_budget - this.state.currentDraftStatus.mySpentBudget}</b>
               </Col>
               <Col md={12}>
               Max bid: <b>${this.getMaxBid()}</b>
               </Col>
               </Row>
-              <Row>
-              <Col md={12}>
-              <h4>Starter counts</h4>
               </Col>
-              </Row>
-              <Row>
-              <Col md={12}>
-              <table style={{marginLeft: "20px"}}>
-                <tbody >
+              <Col md={3}>
+              <h4>Draft status</h4>
+              <Table striped bordered condensed>
+                <thead>
+                <tr>
+                  <th>Position</th>
+                  <th>All</th>
+                  <th>You</th>
+                </tr>
+                </thead>
+                <tbody>
                   <tr>
-                    <td >QB</td>
+                    <td>QB</td>
                     <td>{this.getCountsByPos('QB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.qb}</td>
+                    <td>{this.getYourCountsByPos('QB')} / {this.state.leagueSettings.roster.qb} (${this.getYourSpendByPos('QB')})</td>
                   </tr>
                   <tr>
                     <td>RB</td>
                     <td>{this.getCountsByPos('RB')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.rb}</td>
+                    <td>{this.getYourCountsByPos('RB')} / {this.state.leagueSettings.roster.rb} (${this.getYourSpendByPos('RB')})</td>
                   </tr>
                   <tr>
                     <td>WR</td>
                     <td>{this.getCountsByPos('WR')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.wr}</td>
+                    <td>{this.getYourCountsByPos('WR')} / {this.state.leagueSettings.roster.wr} (${this.getYourSpendByPos('WR')})</td>
                   </tr>
                   <tr>
                     <td>TE</td>
                     <td>{this.getCountsByPos('TE')} / {this.state.leagueSettings.num_teams * this.state.leagueSettings.roster.te}</td>
-                  </tr>
-                  <tr>
-                    <td style={{paddingRight: "10px"}}><strong>Live picks made:</strong></td>
-                    <td>{this.getCountsByPos('all')}</td>
+                    <td>{this.getYourCountsByPos('TE')} / {this.state.leagueSettings.roster.te} (${this.getYourSpendByPos('TE')})</td>
                   </tr>
                 </tbody>
-              </table>
+              </Table>
               </Col>
-              </Row>
-             </Col>
-              <Col md={9}>
+              <Col md={7}>
+              <h4>Next best analysis</h4>
               <Table striped bordered condensed hover>
               <thead>
                 <tr>
@@ -494,7 +523,7 @@ class App extends React.Component {
                 </tr>
                 </tbody>
                 </Table>
-              </Col>
+             </Col>
             </Row>
             </Panel>
             <Panel header="My team" eventKey="2">
