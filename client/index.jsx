@@ -238,7 +238,7 @@ class App extends React.Component {
         && currentDraftStatus.nextBest.hasOwnProperty(position)
         && currentDraftStatus.nextBest[position].length > 0) {
       var value = currentDraftStatus.nextBest[position][index][property];
-      if(parseFloat(value)) return parseFloat(Math.round(value * 100) / 100).toFixed(2);
+      if(parseFloat(value)) return Math.round(value);
       else return value;
     }
   }
@@ -359,10 +359,10 @@ class App extends React.Component {
 
   getYourCountsByPos(position) {
     let count = 0;
-    let rosterByPosition = this.state.currentDraftStatus.rosterByPosition;
-    let rows = [];
-    rosterByPosition[position].forEach((player) => {
-      count++
+    this.state.rowData.forEach((player) => {
+      if(player.position == position && player.draft_team == this.teamList[0]) {
+        count++;
+      }
     });
 
     return count;
@@ -370,10 +370,10 @@ class App extends React.Component {
 
   getYourSpendByPos(position) {
     let sum = 0;
-    let rosterByPosition = this.state.currentDraftStatus.rosterByPosition;
-    let rows = [];
-    rosterByPosition[position].forEach((player) => {
-      sum += player.purchase_price
+    this.state.rowData.forEach((player) => {
+      if(player.position == position && player.draft_team == this.teamList[0]) {
+        sum += player.purchase_price
+      }
     });
 
     return sum;
@@ -484,9 +484,9 @@ class App extends React.Component {
                 <tr>
                   <td>QB</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 0, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 0, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'qb', 0, 'inflated_price')}</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 1, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'qb', 1, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'qb', 1, 'inflated_price')}</td>
                   <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'qb'))}>
                     {this.getBestAvailableDrop(this.state.currentDraftStatus, 'qb')}
                   </td>
@@ -494,9 +494,9 @@ class App extends React.Component {
                 <tr>
                   <td>RB</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 0, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 0, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'rb', 0, 'inflated_price')}</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 1, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'rb', 1, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'rb', 1, 'inflated_price')}</td>
                   <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'rb'))}>
                     {this.getBestAvailableDrop(this.state.currentDraftStatus, 'rb')}
                   </td>
@@ -504,9 +504,9 @@ class App extends React.Component {
                 <tr>
                   <td>WR</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 0, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 0, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'wr', 0, 'inflated_price')}</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 1, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'wr', 1, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'wr', 1, 'inflated_price')}</td>
                   <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'wr'))}>
                     {this.getBestAvailableDrop(this.state.currentDraftStatus, 'wr')}
                   </td>
@@ -514,9 +514,9 @@ class App extends React.Component {
                 <tr>
                   <td>TE</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 0, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 0, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'te', 0, 'inflated_price')}</td>
                   <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 1, 'name')}</td>
-                  <td>{this.getBestAvailable(this.state.currentDraftStatus, 'te', 1, 'inflated_price')}</td>
+                  <td>${this.getBestAvailable(this.state.currentDraftStatus, 'te', 1, 'inflated_price')}</td>
                   <td className={this.getDropOffCellClass(this.getBestAvailableDrop(this.state.currentDraftStatus, 'te'))}>
                     {this.getBestAvailableDrop(this.state.currentDraftStatus, 'te')}
                   </td>

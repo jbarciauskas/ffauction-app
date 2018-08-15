@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {AgGridReact} from "ag-grid-react";
-import {Button, Grid, Row, Col, FormControl, Checkbox} from "react-bootstrap";
+import {Button, Grid, Row, Col, FormControl, Checkbox, Form, FormGroup, ControlLabel} from "react-bootstrap";
 import {byeWeeks} from 'ByeWeeks';
 
 
@@ -15,8 +15,15 @@ export default class extends Component {
         this.onGridReady = this.onGridReady.bind(this);
         this.getRowStyle = this.getRowStyle.bind(this);
         this.lookupByeWeek = this.lookupByeWeek.bind(this);
+        this.getTeamOptions = this.getTeamOptions.bind(this);
+        this.getNomineeFormStyle = this.getNomineeFormStyle.bind(this);
         this.state = {
             quickFilterText: null,
+            nominatedPlayer: null,
+            nominatedTeam: null,
+            nominatedPrice: null,
+            nominatedBase: null,
+            nominatedInf: null,
             columnDefs: this.createColumnDefs()
         };
     }
@@ -31,12 +38,24 @@ export default class extends Component {
         this.setState({quickFilterText: event.target.value});
     }
 
+    onNominatedPrice(event) {
+        this.setState({nominatedPrice: event.target.value});
+    }
+
+    onNominatedTeam(event) {
+        this.setState({nominatedTeam: event.target.value});
+    }
+
     onPlayerDataChange(event) {
       let player = event.data;
+      let changedCol = 'purchase_price';
+      if(event.column) {
+        changedCol = event.column.colId
+      }
       player.purchase_price = parseFloat(player.purchase_price);
       if(player.purchase_price == null || player.purchase_price == 0 || isNaN(player.purchase_price)) {
         player.purchase_price = 0;
-        if(event.column.colId == 'purchase_price') player.draft_team = null;
+        if(changedCol == 'purchase_price') player.draft_team = null;
       }
 
       localStorage.setItem("player-" + event.data.player_id, JSON.stringify({
@@ -49,7 +68,7 @@ export default class extends Component {
       // bubble up
       this.props.onPlayerDataChange(event);
       if(
-          (event.column.colId == 'purchase_price' || event.column.colId == 'draft_team')
+          (changedCol == 'purchase_price' || changedCol == 'draft_team')
           && ((player.purchase_price == 0 && player.draft_team == null) || (player.purchase_price > 0 && player.draft_team != null))
           ) {
         setTimeout(() => {this.gridApi.setRowData(this.props.rowData)}, 0);
@@ -123,11 +142,17 @@ export default class extends Component {
 
     clearFilters(event) {
       document.getElementById('hide-unavailable-check').checked = false;
-      document.getElementById('hide-zero-check').checked = false;
       document.getElementById('quick-text-filter').value = "";
       this.gridApi.setFilterModel(null);
       this.gridApi.onFilterChanged();
-      this.setState({quickFilterText: ''});
+      this.setState({
+        nominatedPlayer: null,
+        nominatedPrice: null,
+        nominatedBase: null,
+        nominatedInf: null,
+        nominatedTeam: null,
+        quickFilterText: ''
+      });
     }
 
     exportCSV(event) {
@@ -149,6 +174,51 @@ export default class extends Component {
       positionFilter.onFilterChanged();
     }
 
+    getTeamOptions(event) {
+      let rows = [];
+      this.props.teamList.forEach((team) => {
+        rows.push(<option>{team}</option>);
+      });
+      return rows;
+    }
+
+    nominateSelected(event) {
+      let rows = this.gridApi.getSelectedRows();
+      let nominatedPlayer = null
+      if(rows && rows.length > 0) {
+        nominatedPlayer = rows[0];
+      }
+      this.setState({
+        nominatedPlayer: nominatedPlayer,
+        nominatedPrice: nominatedPlayer.purchase_price,
+        nominatedTeam: nominatedPlayer.draft_team,
+        nominatedBase: nominatedPlayer.base_price,
+        nominatedInf: nominatedPlayer.inflated_price
+      });
+    }
+
+    onSaveNominee(event) {
+      if(this.state.nominatedPlayer) {
+        this.state.nominatedPlayer.purchase_price = this.state.nominatedPrice;
+        this.state.nominatedPlayer.draft_team = this.state.nominatedTeam;
+        event.data = this.state.nominatedPlayer;
+        this.setState({
+          nominatedPlayer: null,
+          nominatedPrice: null,
+          nominatedTeam: null,
+          nominatedBase: null,
+          nominatedInf: null
+        })
+        this.onPlayerDataChange(event);
+      }
+    }
+
+    getNomineeFormStyle() {
+      if(this.state.nominatedPlayer == null) {
+        return { display: 'none'};
+      }
+    }
+
     render() {
         let containerStyle = {
             height: "500px",
@@ -165,23 +235,51 @@ export default class extends Component {
                     placeholder="Enter player name, position, or team"/>
                 </Col>
                 <Col md={3}>
+                  <Button inline onClick={this.clearFilters}>Clear</Button>{' '}
+                  <Button inline onClick={this.nominateSelected.bind(this)}>Nominate selected</Button>
+                </Col>
+                <Col md={3}>
                   <Button inline onClick={((event) => { this.togglePositionFilter(event, 'QB'); }).bind(this)}>QBs</Button>
                   <Button inline onClick={((event) => { this.togglePositionFilter(event, 'RB'); }).bind(this)}>RBs</Button>
                   <Button inline onClick={((event) => { this.togglePositionFilter(event, 'WR'); }).bind(this)}>WRs</Button>
                   <Button inline onClick={((event) => { this.togglePositionFilter(event, 'TE'); }).bind(this)}>TEs</Button>
                 </Col>
                 <Col md={2}>
-                  <Checkbox id="hide-unavailable-check" inline onChange={this.onHideUnavailablePlayers}>Hide drafted players</Checkbox>
-                </Col>
-                <Col md={2}>
-                  <Checkbox id="hide-zero-check" inline onChange={this.onHideZeroPoints}>Hide zero-point players</Checkbox>
-                </Col>
-                <Col md={1}>
-                  <Button inline onClick={this.clearFilters}>Show all</Button>
+                  <Checkbox inline id="hide-unavailable-check" inline onChange={this.onHideUnavailablePlayers}>Hide drafted players</Checkbox>
                 </Col>
                 <Col md={1}>
                   <Button inline onClick={this.exportCSV.bind(this)}>Export</Button>
                 </Col>
+              </Row>
+              <Row style={{marginBottom:"5px"}}>
+              <Col md={11}>
+              <div style={this.getNomineeFormStyle()}>
+              <Form inline>
+              <FormGroup controlId="formInlineNominee">
+              <ControlLabel>Current nominee: {this.state.nominatedPlayer ? this.state.nominatedPlayer.name : ""}</ControlLabel>
+                {' (Base value: $'}{Math.round(this.state.nominatedBase)}
+                {', Inflated value: $'}{Math.round(this.state.nominatedInf)}{')'}
+                {'  Actual $'}
+                <FormControl type="text"
+                  style={{width:"50px"}}
+                  bsSize="sm"
+                  id="nominated-player-price"
+                  placeholder="$ paid"
+                  onChange={this.onNominatedPrice.bind(this)}
+                  value={this.state.nominatedPrice}/>{' '}
+                <FormControl componentClass="select"
+                  id="nominated-player-team"
+                  placeholder="Team"
+                  onChange={this.onNominatedTeam.bind(this)}
+                  value={this.state.nominatedTeam}
+                  >
+                  {this.getTeamOptions()}
+                </FormControl>{' '}
+                <Button inline onClick={((event) => { this.onSaveNominee(event)}).bind(this)}>Save</Button>
+              </FormGroup>
+              </Form>
+              </div>
+              </Col>
               </Row>
               <Row>
               <Col md={12} >
@@ -192,6 +290,7 @@ export default class extends Component {
                     columnDefs={this.state.columnDefs}
                     rowData={this.props.rowData}
                     quickFilterText={this.state.quickFilterText}
+                    rowSelection="single"
 
                     enableSorting
                     enableFilter
@@ -222,7 +321,7 @@ function formatPoints(params) {
     }
 }
 function formatPriceFloat(params) {
-    let num = parseFloat(Math.round(params.value * 100) / 100).toFixed(2);
+    let num = Math.round(params.value);
     if(isNaN(num) || num === null) {
       return "-";
     }
